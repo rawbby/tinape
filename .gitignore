@@ -1,0 +1,5 @@
+.idea
+.venv
+cmake-build*
+cmake/config.cmake
+extern
