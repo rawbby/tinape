@@ -7,6 +7,7 @@
 
 #include <geometry/circle.h>
 #include <geometry/math.h>
+
 #include <index/index.h>
 
 #include <unordered_map>
@@ -100,60 +101,44 @@ DestroyGame(Game* game)
 //   }
 // }
 
-// bool
-// may_collide_(Dynamic ci, Dynamic cj)
-// {
-//   const auto cia = Advance(ci);
-//   const auto cja = Advance(cj);
-//   const auto ci_ = Dynamic{ cia.p, cia.r, C<F, F>{ 0.0f, 0.0f } };
-//   const auto cj_ = Dynamic{ cja.p, cja.r, C<F, F>{ 0.0f, 0.0f } };
-//
-//   const auto cit = CollisionInTime(ci, cj);
-//   const auto cit1 = CollisionInTime(ci_, cj); // in case ci is stopped later
-//   const auto cit2 = CollisionInTime(ci, cj_); // in case cj is stopped later
-//   const auto col = Overlap(cia, cja);
-//
-//   if (cit == -1)
-//     SDL_Log("Circles overlap at 0");
-//
-//   if (col && !cit)
-//     SDL_Log("col && !cit\n");
-//
-//   return cit || cit1 || cit2 || col;
-// }
+bool
+IsBlockingContinuous(Dynamic a, Dynamic b)
+{
+  const auto a_ = Dynamic{ a.p, a.r, Vec2F{} }; // in case `a` is stopped later
+  const auto b_ = Dynamic{ b.p, b.r, Vec2F{} }; // in case `b` is stopped later
+  return DoCollide(a, b) || DoCollide(a_, b) || DoCollide(a, b_);
+}
+
+bool
+IsBlockingStepping(Dynamic a, Dynamic b)
+{
+  const auto ci0 = Circle{ a.p, a.r };
+  const auto cj0 = Circle{ b.p, b.r };
+  const auto ci5 = Circle{ a.p + 0.5f * a.v, a.r };
+  const auto cj5 = Circle{ b.p + 0.5f * b.v, b.r };
+  const auto ci1 = Circle{ a.p + a.v, a.r };
+  const auto cj1 = Circle{ b.p + b.v, b.r };
+  // clang-format off
+  return Overlap(ci0, cj0) || Overlap(ci0, cj5) || Overlap(ci0, cj1)
+      || Overlap(ci5, cj0) || Overlap(ci5, cj5) || Overlap(ci5, cj1)
+      || Overlap(ci1, cj0) || Overlap(ci1, cj5) || Overlap(ci1, cj1);
+  // clang-format on
+}
 
 void
 HandleIsland(Scene* scene, std::vector<Dynamic>& circles, std::vector<Index>& island, std::unordered_multimap<Index, Index>& island_edges)
 {
-  const auto rc = GetRandom(scene).random_color();
-  SDL_Color c{
-    .r = static_cast<Uint8>(rc.r),
-    .g = static_cast<Uint8>(rc.g),
-    .b = static_cast<Uint8>(rc.b),
-    .a = static_cast<Uint8>(255),
-  };
-
   const auto n = island.size();
   std::unordered_set<Index> blocked{};
 
   for (auto [i, j] : island_edges) {
-    const auto ci = circles[i];
-    const auto cj = circles[j];
-    const auto ci_ = Dynamic{ ci.p, ci.r, Vec2F{} };
-    const auto cj_ = Dynamic{ cj.p, cj.r, Vec2F{} };
-
-    const auto cit = DoCollide(ci, cj);
-    const auto cit1 = DoCollide(ci_, cj); // in case ci is stopped later
-    const auto cit2 = DoCollide(ci, cj_); // in case cj is stopped later
-
-    if (cit || cit1 || cit2) {
+    if (IsBlockingStepping(circles[i], circles[j])) {
       blocked.insert(i);
       blocked.insert(j);
     }
   }
 
   for (int i = 0; i < n; ++i) {
-    SetColor(scene, island[i], c);
     if (!blocked.contains(island[i]))
       circles[island[i]].p += circles[island[i]].v;
     circles[island[i]].v = Vec2F{};
@@ -168,20 +153,9 @@ BruteForce(std::vector<Dynamic>& circles)
   blocked.resize(n, false);
 
   for (int i = 0; i < n; ++i)
-    for (int j = i + 1; j < n; ++j) {
-
-      const auto ci = circles[i];
-      const auto cj = circles[j];
-      const auto ci_ = Dynamic{ ci.p, ci.r, Vec2F{} };
-      const auto cj_ = Dynamic{ cj.p, cj.r, Vec2F{} };
-
-      const auto cit = DoCollide(ci, cj);
-      const auto cit1 = DoCollide(ci_, cj); // in case ci is stopped later
-      const auto cit2 = DoCollide(ci, cj_); // in case cj is stopped later
-
-      if (cit || cit1 || cit2)
+    for (int j = i + 1; j < n; ++j)
+      if (IsBlockingStepping(circles[i], circles[j]))
         blocked[i] = blocked[j] = true;
-    }
 
   for (int i = 0; i < n; ++i) {
     if (!blocked[i])
@@ -194,9 +168,6 @@ void
 Update(Game* game, float)
 {
   auto& circles = Circles(game->scene);
-
-  // auto circles_ = Circles(game->scene);
-  // BruteForce(circles_);
 
   HashGrid grid{};
   grid.Reserve(circles.size());
@@ -227,13 +198,6 @@ Update(Game* game, float)
     if (circle.p.y > constraint::world_height)
       circle.v.y = random.random_bool() ? -constraint::max_velocity_f : 0.0f;
   }
-
-  // const auto n = circles.size();
-  // for (int i = 0; i < n; ++i)
-  //   if (circles[i].p != circles_[i].p)
-  //     SDL_Log("Non default behaviour!");
-
-  // Random{}.update_random_circles(Circles(game->scene));
 }
 
 void

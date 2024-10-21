@@ -34,7 +34,7 @@ struct [[maybe_unused]] HashGrid
     data.reserve(size);
   }
 
-  [[nodiscard]] [[maybe_unused]] constexpr inline static auto neighbours(IndexPair x) noexcept
+  [[nodiscard]] [[maybe_unused]] constexpr inline static auto Neighbours(IndexPair x) noexcept
   {
     return std::array{ x.Add(1, 0), x.Add(-1, 1), x.Add(0, 1), x.Add(1, 1) };
   }
@@ -67,7 +67,7 @@ struct [[maybe_unused]] HashGrid
             consumer(i->second, j->second);
 
       // pairs within neighbourhood
-      for (auto neighbour : HashGrid::neighbours(key)) {
+      for (auto neighbour : HashGrid::Neighbours(key)) {
         for (auto i : Query(neighbour))
           for (auto j : Query(key))
             if (MayCollide(aabbs[i.second], aabbs[j.second]))

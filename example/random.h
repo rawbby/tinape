@@ -36,6 +36,7 @@ public:
   {
     return std::uniform_int_distribution(-1, 1)(mt);
   }
+
   Vec2F random_point()
   {
     const auto puffer = static_cast<float>(c_5 * constraint::max_extend);
@@ -69,7 +70,6 @@ public:
 
   void fill_random_circles(std::vector<Dynamic>& circles, Index n)
   {
-
     circles.reserve(n);
 
     for (unsigned i = 0; i < n; ++i) {
