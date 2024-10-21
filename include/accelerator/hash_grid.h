@@ -51,20 +51,26 @@ struct [[maybe_unused]] HashGrid
       return ++i;
     };
 
+    std::vector<decltype(MakeAABB(Dynamic{}))> aabbs{};
+    aabbs.reserve(circles.size());
+
+    for (auto circle : circles)
+      aabbs.push_back(MakeAABB(circle));
+
     for (auto key : keys) {
 
       // pairs within a bucket
       const auto [beg, end] = data.equal_range(key);
       for (auto i = beg; i != end; ++i)
         for (auto j = inc(i); j != end; ++j)
-          if (MayCollide(MakeAABB(circles[i->second]), MakeAABB(circles[j->second])))
+          if (MayCollide(aabbs[i->second], aabbs[j->second]))
             consumer(i->second, j->second);
 
       // pairs within neighbourhood
       for (auto neighbour : HashGrid::neighbours(key)) {
         for (auto i : Query(neighbour))
           for (auto j : Query(key))
-            if (MayCollide(MakeAABB(circles[i.second]), MakeAABB(circles[j.second])))
+            if (MayCollide(aabbs[i.second], aabbs[j.second]))
               consumer(i.second, j.second);
       }
     }

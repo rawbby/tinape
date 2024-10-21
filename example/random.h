@@ -32,6 +32,10 @@ private:
   }
 
 public:
+  bool random_bool()
+  {
+    return std::uniform_int_distribution(-1, 1)(mt);
+  }
   Vec2F random_point()
   {
     const auto puffer = static_cast<float>(c_5 * constraint::max_extend);
@@ -43,7 +47,7 @@ public:
   Vec2F random_velocity()
   {
     const auto a = dist(0.0f, 2.0f * std::numbers::pi_v<float>)(mt);
-    const auto v = dist(0.25f, static_cast<float>(constraint::max_velocity / 8.0f))(mt);
+    const auto v = dist(0.0f, static_cast<float>(constraint::max_velocity))(mt);
     return { std::cos(a) * v, std::sin(a) * v };
   }
 

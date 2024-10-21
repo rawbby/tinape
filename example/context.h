@@ -161,6 +161,7 @@ Loop(Context* context)
 
   do {
     const auto ti = SDL_GetTicksNS();
+    SDL_Log("%f fps\n", 1000.0 / (static_cast<double>(ti - t0) / 1000000.0));
     RenderScene(context->scene, context->renderer);
     Update(context->game, static_cast<float>(ti - t0) / dt);
     t0 = ti;

@@ -125,7 +125,7 @@ DestroyGame(Game* game)
 void
 HandleIsland(Scene* scene, std::vector<Dynamic>& circles, std::vector<Index>& island, std::unordered_multimap<Index, Index>& island_edges)
 {
-  const auto rc = Random{}.random_color();
+  const auto rc = GetRandom(scene).random_color();
   SDL_Color c{
     .r = static_cast<Uint8>(rc.r),
     .g = static_cast<Uint8>(rc.g),
@@ -211,7 +211,7 @@ Update(Game* game, float)
     HandleIsland(game->scene, circles, island, edges);
   });
 
-  auto random = Random{};
+  auto& random = GetRandom(game->scene);
   for (auto& circle : circles) {
     circle.p += circle.v;
 
@@ -219,13 +219,13 @@ Update(Game* game, float)
       circle.v = random.random_velocity();
 
     if (circle.p.x < c0)
-      circle.v.x = c1;
+      circle.v.x = random.random_bool() ? constraint::max_velocity_f : 0.0f;
     if (circle.p.x > constraint::world_width)
-      circle.v.x = -c1;
+      circle.v.x = random.random_bool() ? -constraint::max_velocity_f : 0.0f;
     if (circle.p.y < c0)
-      circle.v.y = c1;
+      circle.v.y = random.random_bool() ? constraint::max_velocity_f : 0.0f;
     if (circle.p.y > constraint::world_height)
-      circle.v.y = -c1;
+      circle.v.y = random.random_bool() ? -constraint::max_velocity_f : 0.0f;
   }
 
   // const auto n = circles.size();

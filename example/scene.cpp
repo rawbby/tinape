@@ -10,6 +10,7 @@
 
 struct Scene
 {
+  Random* random = nullptr;
   Context* context = nullptr;
   std::vector<Dynamic>* circles = nullptr;
   std::vector<SDL_Color>* colors = nullptr;
@@ -18,17 +19,17 @@ struct Scene
 Scene*
 CreateScene(Context* context)
 {
-  auto random = Random{};
   auto scene = static_cast<Scene*>(SDL_aligned_alloc(sizeof(Scene), 4096));
   if (scene) {
+    scene->random = new Random{};
     scene->circles = new std::vector<Dynamic>{};
     scene->colors = new std::vector<SDL_Color>{};
 
     scene->context = context;
-    Random{}.fill_random_circles(*scene->circles, 1024);
+    scene->random->fill_random_circles(*scene->circles, 256);
 
     for (int i = 0; i < scene->circles->size(); ++i) {
-      const auto c = random.random_color();
+      const auto c = scene->random->random_color();
       const auto r = c.r;
       const auto g = c.g;
       const auto b = c.b;
@@ -113,4 +114,10 @@ SDL_Color
 GetColor(Scene* scene, Uint32 index)
 {
   return scene->colors->at(index);
+}
+
+Random&
+GetRandom(Scene* scene)
+{
+  return *scene->random;
 }
