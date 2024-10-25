@@ -5,9 +5,9 @@
 #include <unordered_set>
 
 #include <accelerator/constraint.h>
-#include <accelerator/query_iterable.h>
 #include <geometry/aabb.h>
 #include <index/index.h>
+#include <index/query_iterable.h>
 
 struct [[maybe_unused]] HashGrid
 {

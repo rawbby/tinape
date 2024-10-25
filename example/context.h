@@ -161,9 +161,14 @@ Loop(Context* context)
 
   do {
     const auto ti = SDL_GetTicksNS();
-    SDL_Log("%f fps\n", 1000.0 / (static_cast<double>(ti - t0) / 1000000.0));
     RenderScene(context->scene, context->renderer);
+
+    const auto t_beg = SDL_GetTicksNS();
     Update(context->game, static_cast<float>(ti - t0) / dt);
+    const auto t_end = SDL_GetTicksNS();
+
+    SDL_Log("%f fps; update: %lu ns \n", 1000.0 / (static_cast<double>(ti - t0) / 1000000.0), t_end - t_beg);
+
     t0 = ti;
 
     PollDatagrams(context);

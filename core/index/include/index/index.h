@@ -3,6 +3,8 @@
 #include <cstdint>
 #include <memory>
 
+#include <absl/hash/hash.h>
+
 using Index = std::uint16_t;
 
 [[maybe_unused]] constexpr inline void
@@ -92,15 +94,16 @@ namespace std {
 template<>
 struct [[maybe_unused]] hash<IndexPair>
 {
-  typedef size_t result_type;
+  typedef std::size_t result_type;
   typedef IndexPair argument_type;
+  absl::Hash<std::uint32_t> hash{};
 
   [[nodiscard]] [[maybe_unused]] constexpr inline result_type operator()(argument_type pair) const noexcept
   {
-    auto h = static_cast<result_type>(pair.first);
+    auto h = static_cast<std::uint32_t>(pair.first);
     h <<= sizeof(Index) << 3;
     h |= pair.second;
-    return h;
+    return hash(h);
   }
 };
 }

@@ -141,6 +141,41 @@ def ensure_cnl(git: str, cmake: str):
     return cnl_install_dir
 
 
+def ensure_absl(git: str, cmake: str):
+    absl_url = 'https://github.com/abseil/abseil-cpp.git'
+    absl_dir = abspath(join(dirname(__file__), 'extern', 'absl-source'))
+    absl_install_dir = abspath(join(dirname(__file__), 'extern', 'absl'))
+    absl_build_dir = join(absl_dir, 'cmake-build-release')
+
+    absl_options = [
+        '-DBUILD_TESTING=OFF',
+        '-DABSL_BUILD_TESTING=OFF',
+        '-DABSL_ENABLE_INSTALL=ON',
+    ]
+
+    cmake_options = [
+        '-S', absl_dir, '-B', absl_build_dir,
+        '-DCMAKE_BUILD_TYPE=Release',
+        f"-DCMAKE_INSTALL_PREFIX={absl_install_dir}",
+    ]
+
+    if not exists(absl_dir):
+        run([git, 'clone', absl_url, absl_dir])
+        run([git, 'checkout', '20240722.0'], cwd=absl_dir)
+
+    if not exists(absl_install_dir):
+        os.makedirs(absl_install_dir)
+
+    if not exists(absl_build_dir):
+        os.makedirs(absl_build_dir)
+
+    run([cmake] + cmake_options + absl_options)
+    run([cmake, '--build', absl_build_dir, '--config', 'Release'])
+    run([cmake, '--install', absl_build_dir, '--prefix', absl_install_dir])
+
+    return absl_install_dir
+
+
 def ensure_sdl_net(git: str, cmake: str):
     sdl_net_url = 'https://github.com/libsdl-org/SDL_net.git'
     sdl_net_dir = abspath(join(dirname(__file__), 'extern', 'sdl-net-source'))
@@ -227,6 +262,7 @@ def main():
     glm_dir = ensure_glm(git, cmake)
     cnl_dir = ensure_cnl(git, cmake)
     sdl_dir = ensure_sdl(git, cmake)
+    absl_dir = ensure_absl(git, cmake)
 
 
 if __name__ == '__main__':

@@ -8,6 +8,12 @@ struct [[maybe_unused]] QueryIterable
   Iterator m_begin;
   Iterator m_end;
 
+  [[maybe_unused]] constexpr inline QueryIterable() noexcept
+    : m_begin()
+    , m_end()
+  {
+  }
+
   [[maybe_unused]] constexpr inline QueryIterable(Iterator begin, Iterator end) noexcept
     : m_begin(std::move(begin))
     , m_end(std::move(end))

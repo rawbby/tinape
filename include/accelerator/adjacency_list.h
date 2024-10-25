@@ -1,7 +1,7 @@
 #pragma once
 
-#include <accelerator/query_iterable.h>
 #include <index/index.h>
+#include <index/query_iterable.h>
 
 #include <stack>
 #include <unordered_map>
