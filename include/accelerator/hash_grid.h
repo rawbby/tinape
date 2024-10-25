@@ -4,6 +4,8 @@
 #include <unordered_map>
 #include <unordered_set>
 
+#include <absl/container/flat_hash_set.h>
+
 #include <accelerator/constraint.h>
 #include <geometry/aabb.h>
 #include <index/index.h>
@@ -11,7 +13,7 @@
 
 struct [[maybe_unused]] HashGrid
 {
-  std::unordered_set<IndexPair> keys{};
+  absl::flat_hash_set<IndexPair, IndexPairHash> keys{};
   std::unordered_multimap<IndexPair, Index> data{};
 
   [[maybe_unused]] inline void Push(Index id, Circle circle) noexcept
@@ -47,13 +49,8 @@ struct [[maybe_unused]] HashGrid
 
   [[nodiscard]] [[maybe_unused]] inline auto Query(const auto& circles, auto consumer) noexcept
   {
-    constexpr auto inc = [](auto i) {
-      return ++i;
-    };
-
     std::vector<decltype(MakeAABB(Dynamic{}))> aabbs{};
     aabbs.reserve(circles.size());
-
     for (auto circle : circles)
       aabbs.push_back(MakeAABB(circle));
 
@@ -62,7 +59,7 @@ struct [[maybe_unused]] HashGrid
       // pairs within a bucket
       const auto [beg, end] = data.equal_range(key);
       for (auto i = beg; i != end; ++i)
-        for (auto j = inc(i); j != end; ++j)
+        for (auto j = std::next(i); j != end; ++j)
           if (MayCollide(aabbs[i->second], aabbs[j->second]))
             consumer(i->second, j->second);
 
@@ -74,5 +71,11 @@ struct [[maybe_unused]] HashGrid
               consumer(i.second, j.second);
       }
     }
+  }
+
+  void Clear()
+  {
+    keys.clear();
+    data.clear();
   }
 };

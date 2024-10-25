@@ -168,6 +168,7 @@ Loop(Context* context)
     const auto t_end = SDL_GetTicksNS();
 
     SDL_Log("%f fps; update: %lu ns \n", 1000.0 / (static_cast<double>(ti - t0) / 1000000.0), t_end - t_beg);
+    SDL_Delay(20);
 
     t0 = ti;
 

@@ -26,7 +26,7 @@ CreateScene(Context* context)
     scene->colors = new std::vector<SDL_Color>{};
 
     scene->context = context;
-    scene->random->fill_random_circles(*scene->circles, 256);
+    scene->random->fill_random_circles(*scene->circles, 512 /*16384*/);
 
     for (int i = 0; i < scene->circles->size(); ++i) {
       const auto c = scene->random->random_color();
@@ -57,7 +57,7 @@ DestroyScene(Scene* scene)
 inline auto
 Transform(auto vec)
 {
-  constexpr auto factor = 3.63f;
+  constexpr auto factor = 3.63f ; // / 8.0f
   constexpr auto offset = Vec<decltype(constraint::max_extend)>{ constraint::max_extend, constraint::max_extend };
   return factor * offset + (factor * vec);
 }
@@ -65,12 +65,12 @@ Transform(auto vec)
 inline void
 DrawCircle(SDL_Renderer* renderer, Dynamic circle)
 {
-  constexpr int n = 45;
+  constexpr int n = 15;
 
-  Vec<float, float> a = Transform(circle.p + Vec2F(circle.r, 0.0f));
+  Vec<float> a = Transform(circle.p + Vec2F(circle.r, 0.0f));
   for (int i = 1; i <= n; ++i) {
     auto theta = static_cast<Float>(i) * glm::two_pi<Float>() / n;
-    Vec<float, float> b = Transform(circle.p + Vec2F(circle.r * cnl::cos(theta), circle.r * cnl::sin(theta)));
+    Vec<float> b = Transform(circle.p + Vec2F(circle.r * cnl::cos(theta), circle.r * cnl::sin(theta)));
     SDL_RenderLine(renderer, a.x, a.y, b.x, b.y);
     a = b;
   }

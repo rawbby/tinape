@@ -3,6 +3,8 @@
 #include <index/index.h>
 #include <index/query_iterable.h>
 
+#include <absl/container/flat_hash_set.h>
+
 #include <stack>
 #include <unordered_map>
 #include <unordered_set>
@@ -10,7 +12,7 @@
 
 struct AdjacencyList
 {
-  std::unordered_set<Index> keys{};
+  absl::flat_hash_set<Index, IndexHash> keys{};
   std::unordered_multimap<Index, Index> data{};
 
   [[maybe_unused]] inline void AddEdge(Index a, Index b) noexcept
@@ -54,5 +56,11 @@ struct AdjacencyList
       island_edges.clear();
       island.clear();
     }
+  }
+
+  void Clear()
+  {
+    keys.clear();
+    data.clear();
   }
 };

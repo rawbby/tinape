@@ -90,6 +90,33 @@ MakeSortedIndex(auto value1, auto value2) noexcept
   return IndexPair{ make_index(value1), make_index(value2) }.Sort();
 }
 
+struct [[maybe_unused]] IndexHash
+{
+  typedef std::size_t result_type;
+  typedef Index argument_type;
+  absl::Hash<std::uint32_t> hash{};
+
+  [[nodiscard]] [[maybe_unused]] constexpr inline result_type operator()(argument_type index) const noexcept
+  {
+    return hash(index);
+  }
+};
+
+struct [[maybe_unused]] IndexPairHash
+{
+  typedef std::size_t result_type;
+  typedef IndexPair argument_type;
+  absl::Hash<std::uint32_t> hash{};
+
+  [[nodiscard]] [[maybe_unused]] constexpr inline result_type operator()(argument_type pair) const noexcept
+  {
+    auto h = static_cast<std::uint32_t>(pair.first);
+    h <<= sizeof(Index) << 3;
+    h |= pair.second;
+    return hash(h);
+  }
+};
+
 namespace std {
 template<>
 struct [[maybe_unused]] hash<IndexPair>

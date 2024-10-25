@@ -125,22 +125,45 @@ IsBlockingStepping(Dynamic a, Dynamic b)
   // clang-format on
 }
 
+bool
+IsBlockingStepping(Dynamic a, Dynamic b, float dt)
+{
+  const auto ci0 = Circle{ a.p, a.r };
+  const auto cj0 = Circle{ b.p, b.r };
+  const auto ci5 = Circle{ a.p + dt * a.v, a.r };
+  const auto cj5 = Circle{ b.p + dt * b.v, b.r };
+  // clang-format off
+  return Overlap(ci0, cj0) || Overlap(ci0, cj5)
+      || Overlap(ci5, cj0) || Overlap(ci5, cj5);
+  // clang-format on
+}
+
 void
 HandleIsland(Scene* scene, std::vector<Dynamic>& circles, std::vector<Index>& island, std::unordered_multimap<Index, Index>& island_edges)
 {
+  auto& random = GetRandom(scene);
+  const auto color = random.random_color();
+
   const auto n = island.size();
   std::unordered_set<Index> blocked{};
 
-  for (auto [i, j] : island_edges) {
-    if (IsBlockingStepping(circles[i], circles[j])) {
-      blocked.insert(i);
-      blocked.insert(j);
+  for (int _ = 0; _ < 8; ++_) {
+    blocked.clear();
+
+    for (auto [i, j] : island_edges) {
+      if (IsBlockingStepping(circles[i], circles[j], 0.125f)) {
+        blocked.insert(i);
+        blocked.insert(j);
+      }
     }
+
+    for (int i = 0; i < n; ++i)
+      if (!blocked.contains(island[i]))
+        circles[island[i]].p += 0.125f * circles[island[i]].v;
   }
 
   for (int i = 0; i < n; ++i) {
-    if (!blocked.contains(island[i]))
-      circles[island[i]].p += circles[island[i]].v;
+    SetColor(scene, island[i], SDL_Color(color.r, color.g, color.b, 255));
     circles[island[i]].v = Vec2F{};
   }
 }
@@ -169,12 +192,14 @@ Update(Game* game, float)
 {
   auto& circles = Circles(game->scene);
 
-  HashGrid grid{};
+  static HashGrid grid{};
+  grid.Clear();
   grid.Reserve(circles.size());
   for (int i = 0; i < circles.size(); ++i)
     grid.Push(i, circles[i]);
 
-  AdjacencyList archipelago{};
+  static AdjacencyList archipelago{};
+  archipelago.Clear();
   grid.Query(circles, [&](auto i, auto j) {
     archipelago.AddEdge(i, j);
   });
@@ -186,7 +211,7 @@ Update(Game* game, float)
   for (auto& circle : circles) {
     circle.p += circle.v;
 
-    if (circle.v == Vec2F{})
+    if (circle.v == Vec2F{} && random.random_bool() && random.random_bool() && random.random_bool() && random.random_bool())
       circle.v = random.random_velocity();
 
     if (circle.p.x < c0)
