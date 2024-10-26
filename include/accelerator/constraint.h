@@ -25,8 +25,8 @@ namespace constraint {
 [[maybe_unused]] constexpr auto max_world_width_f = static_cast<float>(max_world_width);
 [[maybe_unused]] constexpr auto max_world_height_f = static_cast<float>(max_world_height);
 
-[[maybe_unused]] constexpr auto world_width = 512u;
-[[maybe_unused]] constexpr auto world_height = 256u;
+[[maybe_unused]] constexpr auto world_width = 4095u;
+[[maybe_unused]] constexpr auto world_height = 2047u;
 
 [[maybe_unused]] constexpr auto world_width_f = 512.0f;
 [[maybe_unused]] constexpr auto world_height_f = 256.0f;

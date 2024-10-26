@@ -116,7 +116,7 @@ def ensure_cnl(git: str, cmake: str):
         '-DBUILD_TESTING=OFF',
         '-DCNL_EXCEPTIONS=OFF',
         '-DCNL_SANITIZE=OFF',
-        '-DCNL_INT128=OFF',
+        '-DCNL_INT128=ON',
     ]
 
     cmake_options = [

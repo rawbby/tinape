@@ -19,35 +19,27 @@ project(Tinape
         VERSION 0.0.1
         LANGUAGES CXX)
 
+add_subdirectory(core/platform)
+
+set(SDL_DIR "${CMAKE_CURRENT_LIST_DIR}/extern/sdl")
 set(GLM_DIR "${CMAKE_CURRENT_LIST_DIR}/extern/glm")
+set(CNL_DIR "${CMAKE_CURRENT_LIST_DIR}/extern/cnl")
+set(ABSL_DIR "${CMAKE_CURRENT_LIST_DIR}/extern/absl")
+
 find_package(glm REQUIRED
         CONFIG REQUIRED
         PATHS ${GLM_DIR}
         COMPONENTS glm)
 
-set(CNL_DIR "${CMAKE_CURRENT_LIST_DIR}/extern/cnl")
 find_package(Cnl REQUIRED
         CONFIG REQUIRED
         PATHS ${CNL_DIR}
         COMPONENTS Cnl)
 
-set(SDL_DIR "${CMAKE_CURRENT_LIST_DIR}/extern/sdl")
-find_package(SDL3 REQUIRED
-        CONFIG REQUIRED
-        PATHS ${SDL_DIR}
-        COMPONENTS SDL3-static)
-find_package(SDL3_net REQUIRED
-        CONFIG REQUIRED
-        PATHS ${SDL_DIR}
-        COMPONENTS SDL3_net-static)
-
-set(ABSL_DIR "${CMAKE_CURRENT_LIST_DIR}/extern/absl")
 find_package(absl REQUIRED
         CONFIG REQUIRED
         PATHS ${ABSL_DIR}
         COMPONENTS base flat_hash_map)
-
-add_subdirectory(core/index)
 
 set(LIBRARY_NAME ${PROJECT_NAME})
 
@@ -58,7 +50,13 @@ set_target_properties(${LIBRARY_NAME} PROPERTIES
         CXX_STANDARD ${CMAKE_CXX_STANDARD}
         CXX_STANDARD_REQUIRED ${CMAKE_CXX_STANDARD_REQUIRED})
 
-target_link_libraries(${LIBRARY_NAME} INTERFACE Index)
+target_sources(${LIBRARY_NAME} INTERFACE
+        "${CMAKE_CURRENT_LIST_DIR}/include/index/index.h"
+        "${CMAKE_CURRENT_LIST_DIR}/include/index/query_iterable.h")
+
+target_link_libraries(${LIBRARY_NAME} INTERFACE absl::base)
+target_link_libraries(${LIBRARY_NAME} INTERFACE absl::flat_hash_map)
+target_link_libraries(${LIBRARY_NAME} INTERFACE absl::flat_hash_set)
 target_link_libraries(${LIBRARY_NAME} INTERFACE glm::glm)
 target_link_libraries(${LIBRARY_NAME} INTERFACE Cnl::Cnl)
 
@@ -76,5 +74,4 @@ set_target_properties(${EXECUTABLE_NAME} PROPERTIES
         CXX_STANDARD_REQUIRED ${CMAKE_CXX_STANDARD_REQUIRED})
 
 target_link_libraries(${EXECUTABLE_NAME} PRIVATE ${LIBRARY_NAME})
-target_link_libraries(${EXECUTABLE_NAME} PRIVATE SDL3::SDL3-static)
-target_link_libraries(${EXECUTABLE_NAME} PRIVATE SDL3_net::SDL3_net-static)
+target_link_libraries(${EXECUTABLE_NAME} PRIVATE platform)
