@@ -1,0 +1,41 @@
+name: Build and Test
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    strategy:
+      matrix:
+        os: [ ubuntu-latest, windows-latest ]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Run bootstrap script
+        run: python bootstrap.py
+
+      - name: Create build directory
+        run: mkdir cmake-build-release
+
+      - name: Configure CMake
+        run: cmake -S . -B ./cmake-build-release -DCMAKE_BUILD_TYPE=Release -DBUILD_TESTING=ON
+
+      - name: Build the project
+        run: cmake --build ./cmake-build-release --config Release
+
+      - name: Run tests with ctest
+        run: ctest --test-dir ./cmake-build-release --output-on-failure
