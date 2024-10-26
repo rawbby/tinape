@@ -226,9 +226,9 @@ def main():
     sdl_dir = ensure_sdl(git, cmake)
     absl_dir = ensure_absl(git, cmake)
 
-    append(config, f"set(CNL_DIR \"{cnl_dir}\")")
-    append(config, f"set(SDL_DIR \"{sdl_dir}\")")
-    append(config, f"set(ABSL_DIR \"{absl_dir}\")")
+    append(config, f"set(CNL_DIR \"{cnl_dir.replace('\\', '/')}\")")
+    append(config, f"set(SDL_DIR \"{sdl_dir.replace('\\', '/')}\")")
+    append(config, f"set(ABSL_DIR \"{absl_dir.replace('\\', '/')}\")")
 
 
 if __name__ == '__main__':
