@@ -1,8 +1,10 @@
 #pragma once
 
+#include <type/float.h>
+#include <type/index.h>
+
 #include <geometry/aabb.h>
 #include <geometry/circle.h>
-#include <index/index.h>
 
 #include <platform.h>
 
@@ -72,23 +74,34 @@ public:
   Vec2F RandomVelocity()
   {
     const auto a = dist_t(0.0f, 2.0f * std::numbers::pi_v<float>)(mt);
-    const auto v = dist_t(0.0f, static_cast<float>(constraint::max_velocity))(mt);
+    const auto v = dist_t(0.0f, constraint::max_velocity_f)(mt);
     return { std::cos(a) * v, std::sin(a) * v };
   }
 
   Float RandomRadius()
   {
-    return dist_t(static_cast<float>(constraint::min_extend), static_cast<float>(constraint::max_extend))(mt);
+    return dist_t(constraint::min_extend_f, constraint::max_extend_f)(mt);
   }
 
   SDL_Color RandomColor()
   {
-    auto dist_c = std::uniform_int_distribution<int>(128, 255);
-    auto dist_f = std::uniform_int_distribution<int>(0, 4)(mt);
-    return { static_cast<std::uint8_t>(dist_c(mt) - (dist_f == 1 ? c0 : c128)),
-             static_cast<std::uint8_t>(dist_c(mt) - (dist_f == 2 ? c0 : c128)),
-             static_cast<std::uint8_t>(dist_c(mt) - (dist_f == 3 ? c0 : c128)),
-             255 };
+    auto dist_c = std::uniform_int_distribution<std::uint8_t>(127, 255);
+    auto dist_f = std::uniform_int_distribution<std::uint8_t>(0, 3)(mt);
+
+    auto r = dist_c(mt);
+    auto g = dist_c(mt);
+    auto b = dist_c(mt);
+
+    switch (dist_f) {
+      case 1:
+        r -= 127;
+      case 2:
+        g -= 127;
+      default:
+        b -= 127;
+    }
+
+    return { r, g, b, 255 };
   }
 
   void FillRandomCircles(Index n)

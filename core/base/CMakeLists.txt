@@ -1,15 +1,16 @@
 cmake_minimum_required(VERSION 3.10)
 
-find_package(SDL3 REQUIRED
+find_package(Cnl REQUIRED
         CONFIG REQUIRED
-        PATHS ${SDL_DIR}
-        COMPONENTS SDL3-static)
-find_package(SDL3_net REQUIRED
-        CONFIG REQUIRED
-        PATHS ${SDL_DIR}
-        COMPONENTS SDL3_net-static)
+        PATHS ${CNL_DIR}
+        COMPONENTS Cnl)
 
-set(TARGET_NAME platform)
+find_package(absl REQUIRED
+        CONFIG REQUIRED
+        PATHS ${ABSL_DIR}
+        COMPONENTS base flat_hash_map)
+
+set(TARGET_NAME base)
 
 file(GLOB_RECURSE TARGET_INC "${CMAKE_CURRENT_SOURCE_DIR}/include/*")
 
@@ -18,8 +19,10 @@ add_library(${TARGET_NAME} INTERFACE)
 target_sources(${TARGET_NAME} INTERFACE ${TARGET_INC})
 target_include_directories(${TARGET_NAME} INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/include")
 
-target_link_libraries(${TARGET_NAME} INTERFACE SDL3::SDL3-static)
-target_link_libraries(${TARGET_NAME} INTERFACE SDL3_net::SDL3_net-static)
+target_link_libraries(${TARGET_NAME} INTERFACE absl::base)
+target_link_libraries(${TARGET_NAME} INTERFACE absl::flat_hash_map)
+target_link_libraries(${TARGET_NAME} INTERFACE absl::flat_hash_set)
+target_link_libraries(${TARGET_NAME} INTERFACE Cnl::Cnl)
 
 set_target_properties(${TARGET_NAME} PROPERTIES
         LINKER_LANGUAGE CXX

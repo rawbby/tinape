@@ -1,7 +1,7 @@
 #pragma once
 
-#include <index/index.h>
-#include <index/query_iterable.h>
+#include <container/query_iterable.h>
+#include <type/index.h>
 
 #include <absl/container/flat_hash_set.h>
 

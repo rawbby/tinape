@@ -19,59 +19,28 @@ project(Tinape
         VERSION 0.0.1
         LANGUAGES CXX)
 
-add_subdirectory(core/platform)
-
 set(SDL_DIR "${CMAKE_CURRENT_LIST_DIR}/extern/sdl")
 set(GLM_DIR "${CMAKE_CURRENT_LIST_DIR}/extern/glm")
 set(CNL_DIR "${CMAKE_CURRENT_LIST_DIR}/extern/cnl")
 set(ABSL_DIR "${CMAKE_CURRENT_LIST_DIR}/extern/absl")
 
-find_package(glm REQUIRED
-        CONFIG REQUIRED
-        PATHS ${GLM_DIR}
-        COMPONENTS glm)
+add_subdirectory(core/base)
+add_subdirectory(core/platform)
+add_subdirectory(core/collision)
 
-find_package(Cnl REQUIRED
-        CONFIG REQUIRED
-        PATHS ${CNL_DIR}
-        COMPONENTS Cnl)
+set(TARGET_NAME DrawScene)
 
-find_package(absl REQUIRED
-        CONFIG REQUIRED
-        PATHS ${ABSL_DIR}
-        COMPONENTS base flat_hash_map)
+add_executable(${TARGET_NAME})
+file(GLOB_RECURSE TARGET_SRC ${CMAKE_CURRENT_SOURCE_DIR}/example/*)
+target_sources(${TARGET_NAME} PRIVATE ${TARGET_SRC})
 
-set(LIBRARY_NAME ${PROJECT_NAME})
+target_include_directories(${TARGET_NAME} PRIVATE include)
 
-add_library(${LIBRARY_NAME} INTERFACE)
-target_include_directories(${LIBRARY_NAME} INTERFACE include)
-set_target_properties(${LIBRARY_NAME} PROPERTIES
+set_target_properties(${TARGET_NAME} PROPERTIES
         LINKER_LANGUAGE CXX
         CXX_STANDARD ${CMAKE_CXX_STANDARD}
         CXX_STANDARD_REQUIRED ${CMAKE_CXX_STANDARD_REQUIRED})
 
-target_sources(${LIBRARY_NAME} INTERFACE
-        "${CMAKE_CURRENT_LIST_DIR}/include/index/index.h"
-        "${CMAKE_CURRENT_LIST_DIR}/include/index/query_iterable.h")
-
-target_link_libraries(${LIBRARY_NAME} INTERFACE absl::base)
-target_link_libraries(${LIBRARY_NAME} INTERFACE absl::flat_hash_map)
-target_link_libraries(${LIBRARY_NAME} INTERFACE absl::flat_hash_set)
-target_link_libraries(${LIBRARY_NAME} INTERFACE glm::glm)
-target_link_libraries(${LIBRARY_NAME} INTERFACE Cnl::Cnl)
-
-set(EXECUTABLE_NAME DrawScene)
-
-add_executable(${EXECUTABLE_NAME})
-file(GLOB_RECURSE DRAW_SCENE_SRC ${CMAKE_CURRENT_SOURCE_DIR}/example/*)
-target_sources(${EXECUTABLE_NAME} PRIVATE ${DRAW_SCENE_SRC})
-
-target_include_directories(${EXECUTABLE_NAME} PRIVATE include)
-
-set_target_properties(${EXECUTABLE_NAME} PROPERTIES
-        LINKER_LANGUAGE CXX
-        CXX_STANDARD ${CMAKE_CXX_STANDARD}
-        CXX_STANDARD_REQUIRED ${CMAKE_CXX_STANDARD_REQUIRED})
-
-target_link_libraries(${EXECUTABLE_NAME} PRIVATE ${LIBRARY_NAME})
-target_link_libraries(${EXECUTABLE_NAME} PRIVATE platform)
+target_link_libraries(${TARGET_NAME} PRIVATE base)
+target_link_libraries(${TARGET_NAME} PRIVATE platform)
+target_link_libraries(${TARGET_NAME} PRIVATE collision)

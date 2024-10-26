@@ -1,11 +1,10 @@
 #pragma once
 
+#include <type/index_pair.h>
+
 #include <bit>
 #include <cmath>
 #include <cstdint>
-
-#include "geometry/math.h"
-#include "index/index.h"
 
 namespace constraint {
 
@@ -51,7 +50,7 @@ Quantify(auto a, auto b) noexcept
 
 template<typename S>
 [[nodiscard]] [[maybe_unused]] constexpr inline IndexPair
-Quantify(Vec<S> s) noexcept
+Quantify(Vec2<S> s) noexcept
 {
   return { Quantify(s.x), Quantify(s.y) };
 }

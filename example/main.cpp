@@ -1,11 +1,16 @@
 #include "./game.h"
 #include "./scene.h"
 
+#include <type/float.h>
+#include <type/vec2.h>
+
 #include <platform.h>
 
 #include <accelerator/constraint.h>
 #include <geometry/aabb.h>
 #include <geometry/circle.h>
+
+#include <absl/container/inlined_vector.h>
 
 class MyWindow : public RendererWindow
 {
@@ -13,7 +18,7 @@ protected:
   inline auto Transform(auto vec)
   {
     constexpr auto factor = 3.63f / 8.0f;
-    constexpr auto offset = Vec<decltype(constraint::max_extend)>{ constraint::max_extend, constraint::max_extend };
+    constexpr auto offset = Vec2<decltype(constraint::max_extend)>{ constraint::max_extend, constraint::max_extend };
     return factor * offset + (factor * vec);
   }
 
@@ -21,10 +26,10 @@ protected:
   {
     constexpr int n = 15;
 
-    Vec<float> a = Transform(circle.p + Vec2F(circle.r, 0.0f));
+    Vec2<float> a = Transform(circle.p + Vec2F(circle.r, 0.0f));
     for (int i = 1; i <= n; ++i) {
       auto theta = static_cast<Float>(i) * 2 * cnl::numbers::pi_v<Float> / n;
-      Vec<float> b = Transform(circle.p + Vec2F(circle.r * cnl::cos(theta), circle.r * cnl::sin(theta)));
+      Vec2<float> b = Transform(circle.p + Vec2F(circle.r * cnl::cos(theta), circle.r * cnl::sin(theta)));
       SDL_RenderLine(renderer, a.x, a.y, b.x, b.y);
       a = b;
     }
@@ -33,8 +38,8 @@ protected:
   template<typename S>
   inline void DrawAABB(SDL_Renderer* renderer, AABB<S> c)
   {
-    Vec<float, float> min = Transform(c.min);
-    Vec<float, float> max = Transform(c.max);
+    Vec2<float, float> min = Transform(c.min);
+    Vec2<float, float> max = Transform(c.max);
     SDL_RenderLine(renderer, min.x, min.y, max.x, min.y);
     SDL_RenderLine(renderer, max.x, min.y, max.x, max.y);
     SDL_RenderLine(renderer, max.x, max.y, min.x, max.y);

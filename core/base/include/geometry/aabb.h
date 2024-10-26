@@ -5,15 +5,17 @@
 
 #include <accelerator/constraint.h>
 
+#include <utility>
+
 template<typename S>
 struct [[maybe_unused]] AABB
 {
-  Vec<S, S> min;
-  Vec<S, S> max;
+  Vec2<S> min;
+  Vec2<S> max;
 
-  [[maybe_unused]] constexpr inline AABB(Vec<S, S> min, Vec<S, S> max) noexcept
-    : min(min)
-    , max(max)
+  [[maybe_unused]] constexpr inline AABB(Vec2<S> min, Vec2<S> max) noexcept
+    : min(std::move(min))
+    , max(std::move(max))
   {
   }
 };
@@ -25,7 +27,7 @@ MinAABB(Circle circle) noexcept
   const auto min_y = circle.p.y - circle.r;
   static_assert(std::is_same_v<decltype(min_x), decltype(min_y)>);
   using S = decltype(min_x);
-  return Vec<S>{ min_x, min_y };
+  return Vec2<S>{ min_x, min_y };
 }
 
 [[nodiscard]] [[maybe_unused]] constexpr inline auto
@@ -34,7 +36,7 @@ MinAABB(Dynamic dynamic) noexcept
   const auto min_x = dynamic.p.x - dynamic.r + std::min(dynamic.v.x, Float{ 0.0f });
   const auto min_y = dynamic.p.y - dynamic.r + std::min(dynamic.v.y, Float{ 0.0f });
   static_assert(std::is_same_v<decltype(min_x), decltype(min_y)>);
-  return Vec<decltype(min_x)>{ min_x, min_y };
+  return Vec2<decltype(min_x)>{ min_x, min_y };
 }
 
 [[nodiscard]] [[maybe_unused]] constexpr inline auto
@@ -43,7 +45,7 @@ MaxAABB(Circle circle) noexcept
   const auto max_x = circle.p.x + circle.r;
   const auto max_y = circle.p.y + circle.r;
   static_assert(std::is_same_v<decltype(max_x), decltype(max_y)>);
-  return Vec<decltype(max_x)>{ max_x, max_y };
+  return Vec2<decltype(max_x)>{ max_x, max_y };
 }
 
 [[nodiscard]] [[maybe_unused]] constexpr inline auto
@@ -52,7 +54,7 @@ MaxAABB(Dynamic dynamic) noexcept
   const auto max_x = dynamic.p.x + dynamic.r + std::max(dynamic.v.x, Float{ 0.0f });
   const auto max_y = dynamic.p.y + dynamic.r + std::max(dynamic.v.y, Float{ 0.0f });
   static_assert(std::is_same_v<decltype(max_x), decltype(max_y)>);
-  return Vec<decltype(max_x)>{ max_x, max_y };
+  return Vec2<decltype(max_x)>{ max_x, max_y };
 }
 
 [[nodiscard]] [[maybe_unused]] constexpr inline auto

@@ -6,7 +6,7 @@
 #include <accelerator/constraint.h>
 #include <accelerator/hash_grid.h>
 #include <geometry/circle.h>
-#include <index/index.h>
+#include <type/index.h>
 
 class MyGame
 {

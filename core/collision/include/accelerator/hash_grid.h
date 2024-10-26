@@ -7,14 +7,14 @@
 #include <absl/container/flat_hash_set.h>
 
 #include <accelerator/constraint.h>
+#include <container/query_iterable.h>
 #include <geometry/aabb.h>
-#include <index/index.h>
-#include <index/query_iterable.h>
+#include <type/index.h>
 
 struct [[maybe_unused]] HashGrid
 {
   absl::flat_hash_set<IndexPair, IndexPairHash> keys{};
-  std::unordered_multimap<IndexPair, Index> data{};
+  std::unordered_multimap<IndexPair, Index, IndexPairHash> data{};
 
   [[maybe_unused]] inline void Push(Index id, Circle circle) noexcept
   {
@@ -38,7 +38,7 @@ struct [[maybe_unused]] HashGrid
 
   [[nodiscard]] [[maybe_unused]] constexpr inline static auto Neighbours(IndexPair x) noexcept
   {
-    return std::array{ x.Add(1, 0), x.Add(-1, 1), x.Add(0, 1), x.Add(1, 1) };
+    return std::array{ x + IndexPair(1, 0), x + IndexPair(-1, 1), x + IndexPair(0, 1), x + IndexPair(1, 1) };
   }
 
   [[nodiscard]] [[maybe_unused]] inline auto Query(IndexPair key) noexcept
