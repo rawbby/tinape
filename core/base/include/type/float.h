@@ -9,7 +9,7 @@
 #include <cnl/elastic_integer.h>
 #include <cnl/fixed_point.h>
 
-using Float = cnl::fixed_point<cnl::elastic_integer<23, std::int32_t>, -10>;
+using Float = cnl::fixed_point<cnl::elastic_integer<22, std::int32_t>, -10>;
 using Vec2F = Vec2<Float>;
 using Vec3F = Vec3<Float>;
 using Vec4F = Vec4<Float>;

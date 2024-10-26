@@ -34,7 +34,7 @@ public:
     // clang-format on
   }
 
-  void HandleIsland(std::span<Dynamic> circles, std::vector<Index>& island, std::unordered_multimap<Index, Index>& island_edges)
+  void HandleIsland(std::span<Dynamic> circles, std::span<Index> island, std::unordered_multimap<Index, Index>& island_edges)
   {
     const auto color = scene->RandomColor();
 

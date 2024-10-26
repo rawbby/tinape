@@ -4,6 +4,7 @@
 #include <type/index.h>
 
 #include <absl/container/flat_hash_set.h>
+#include <absl/container/inlined_vector.h>
 
 #include <stack>
 #include <unordered_map>
@@ -33,19 +34,19 @@ struct AdjacencyList
   {
     // DFS
 
-    std::stack<Index> s{};
-    std::vector<Index> island{};
+    absl::InlinedVector<Index, 64> stack{};
+    absl::InlinedVector<Index, 64> island{};
     std::unordered_multimap<Index, Index> island_edges{};
 
     while (!keys.empty()) {
-      s.push(*keys.begin());
-      while (!s.empty()) {
-        auto v = s.top();
-        s.pop();
+      stack.push_back(*keys.begin());
+      while (!stack.empty()) {
+        auto v = Index{ stack.back() };
+        stack.pop_back();
         if (keys.erase(v)) {
           island.push_back(v);
           for (auto [_, w] : Query(v)) {
-            s.push(w);
+            stack.push_back(w);
             island_edges.emplace(v, w);
           }
         }

@@ -1,6 +1,7 @@
 #pragma once
 
-#include "./math.h"
+#include "../type/float.h"
+#include "../type/traits.h"
 
 struct Circle
 {
