@@ -13,7 +13,7 @@ struct IndexPairHash
   typedef IndexPair argument_type;
   absl::Hash<std::uint32_t> hash{};
 
-  [[nodiscard]] constexpr inline result_type operator()(argument_type pair) const noexcept
+  [[nodiscard]] inline result_type operator()(argument_type pair) const noexcept
   {
     auto h = static_cast<std::uint32_t>(pair.x);
     h <<= sizeof(Index) << 3;
