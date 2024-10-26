@@ -1,5 +1,3 @@
-set(SDL_DIR "${CMAKE_CURRENT_LIST_DIR}/extern/sdl")
-
 find_package(SDL3 REQUIRED
         CONFIG REQUIRED
         PATHS ${SDL_DIR}

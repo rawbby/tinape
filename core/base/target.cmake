@@ -1,6 +1,3 @@
-set(CNL_DIR "${CMAKE_CURRENT_LIST_DIR}/extern/cnl")
-set(ABSL_DIR "${CMAKE_CURRENT_LIST_DIR}/extern/absl")
-
 find_package(Cnl REQUIRED
         CONFIG REQUIRED
         PATHS ${CNL_DIR}
