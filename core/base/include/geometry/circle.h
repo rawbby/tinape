@@ -2,20 +2,20 @@
 
 #include "./math.h"
 
-struct [[maybe_unused]] Circle
+struct Circle
 {
   Vec2F p;
   Float r;
 };
 
-struct [[maybe_unused]] Dynamic
+struct Dynamic
 {
   Vec2F p;
   Float r;
   Vec2F v;
 };
 
-[[nodiscard]] [[maybe_unused]] constexpr inline bool
+[[nodiscard]] constexpr inline bool
 DoCollide(Dynamic d0, Dynamic d1) noexcept
 {
   // Equation to solve for t:
@@ -74,7 +74,7 @@ DoCollide(Dynamic d0, Dynamic d1) noexcept
   return c - (b * b) / (a2 + a2) <= xx;
 }
 
-[[nodiscard]] [[maybe_unused]] constexpr inline bool
+[[nodiscard]] constexpr inline bool
 Overlap(Circle a, Circle b) noexcept
 {
   const auto x = b.r + a.r;
@@ -82,13 +82,13 @@ Overlap(Circle a, Circle b) noexcept
   return Dot(dp, dp) <= x * x;
 }
 
-[[nodiscard]] [[maybe_unused]] constexpr inline Circle
+[[nodiscard]] constexpr inline Circle
 Advance(Dynamic dynamic) noexcept
 {
   return { dynamic.p + dynamic.v, dynamic.r };
 }
 
-[[nodiscard]] [[maybe_unused]] constexpr inline Circle
+[[nodiscard]] constexpr inline Circle
 Advance(Dynamic dynamic, auto dt) noexcept
 {
   return { dynamic.p + dt * dynamic.v, dynamic.r };

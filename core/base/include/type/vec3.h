@@ -10,7 +10,7 @@ public:
   Y y;
   Z z;
 
-  [[nodiscard]] [[maybe_unused]] constexpr inline Vec3() noexcept
+  [[nodiscard]] constexpr inline Vec3() noexcept
     : x()
     , y()
     , z()
@@ -18,7 +18,7 @@ public:
   }
 
   template<typename X_, typename Y_, typename Z_>
-  [[nodiscard]] [[maybe_unused]] constexpr inline Vec3(X_ x, Y_ y, Z_ z) noexcept
+  [[nodiscard]] constexpr inline Vec3(X_ x, Y_ y, Z_ z) noexcept
     : x(x)
     , y(y)
     , z(z)
@@ -28,7 +28,7 @@ public:
 #pragma clang diagnostic push
 #pragma ide diagnostic ignored "google-explicit-constructor"
   template<typename X_, typename Y_, typename Z_>
-  [[nodiscard]] [[maybe_unused]] constexpr inline Vec3(Vec3<X_, Y_, Z_> other) noexcept
+  [[nodiscard]] constexpr inline Vec3(Vec3<X_, Y_, Z_> other) noexcept
     : x(other.x)
     , y(other.y)
     , z(other.z)
@@ -37,7 +37,7 @@ public:
 #pragma clang diagnostic pop
 
   template<typename X_, typename Y_, typename Z_>
-  [[nodiscard]] [[maybe_unused]] constexpr inline Vec3<X, Y, Z>& operator=(Vec3<X_, Y_, Z_> other) noexcept
+  [[nodiscard]] constexpr inline Vec3<X, Y, Z>& operator=(Vec3<X_, Y_, Z_> other) noexcept
   {
     if constexpr (std::is_same_v<X, X_> && std::is_same_v<Y, Y_> && std::is_same_v<Z, Z_>)
       if (this == &other)
@@ -50,7 +50,7 @@ public:
   }
 
   template<typename X_, typename Y_, typename Z_>
-  [[nodiscard]] [[maybe_unused]] constexpr inline auto operator+(Vec3<X_, Y_, Z_> other) const noexcept
+  [[nodiscard]] constexpr inline auto operator+(Vec3<X_, Y_, Z_> other) const noexcept
   {
     const auto x_ = x + other.x;
     const auto y_ = y + other.y;
@@ -59,7 +59,7 @@ public:
   }
 
   template<typename X_, typename Y_, typename Z_>
-  [[maybe_unused]] constexpr inline Vec3<X, Y, Z>& operator+=(const Vec3<X_, Y_, Z_>& other) noexcept
+  constexpr inline Vec3<X, Y, Z>& operator+=(const Vec3<X_, Y_, Z_>& other) noexcept
   {
     x += other.x;
     y += other.y;
@@ -68,7 +68,7 @@ public:
   }
 
   template<typename X_, typename Y_, typename Z_>
-  [[nodiscard]] [[maybe_unused]] constexpr inline auto operator-(const Vec3<X_, Y_, Z_>& other) const noexcept
+  [[nodiscard]] constexpr inline auto operator-(const Vec3<X_, Y_, Z_>& other) const noexcept
   {
     const auto x_ = x - other.x;
     const auto y_ = y - other.y;
@@ -77,7 +77,7 @@ public:
   }
 
   template<typename X_, typename Y_, typename Z_>
-  [[nodiscard]] [[maybe_unused]] constexpr inline Vec3<X, Y, Z>& operator-=(const Vec3<X_, Y_, Z_>& other) noexcept
+  [[nodiscard]] constexpr inline Vec3<X, Y, Z>& operator-=(const Vec3<X_, Y_, Z_>& other) noexcept
   {
     x -= other.x;
     y -= other.y;
@@ -86,7 +86,7 @@ public:
   }
 
   template<typename S>
-  [[nodiscard]] [[maybe_unused]] constexpr inline auto operator*(S s) const noexcept
+  [[nodiscard]] constexpr inline auto operator*(S s) const noexcept
   {
     const auto x_ = x * s;
     const auto y_ = y * s;
@@ -95,7 +95,7 @@ public:
   }
 
   template<typename S>
-  [[nodiscard]] [[maybe_unused]] constexpr inline Vec3<X, Y, Z>& operator*=(S s) noexcept
+  [[nodiscard]] constexpr inline Vec3<X, Y, Z>& operator*=(S s) noexcept
   {
     x *= s;
     y *= s;
@@ -104,7 +104,7 @@ public:
   }
 
   template<typename S>
-  [[nodiscard]] [[maybe_unused]] constexpr inline auto operator/(S s) const noexcept
+  [[nodiscard]] constexpr inline auto operator/(S s) const noexcept
   {
     const auto x_ = x / s;
     const auto y_ = y / s;
@@ -113,7 +113,7 @@ public:
   }
 
   template<typename S>
-  [[nodiscard]] [[maybe_unused]] constexpr inline Vec3<X, Y, Z>& operator/=(S s) noexcept
+  [[nodiscard]] constexpr inline Vec3<X, Y, Z>& operator/=(S s) noexcept
   {
     x /= s;
     y /= s;
@@ -121,7 +121,7 @@ public:
     return *this;
   }
 
-  [[nodiscard]] [[maybe_unused]] constexpr inline auto operator-() const noexcept
+  [[nodiscard]] constexpr inline auto operator-() const noexcept
   {
     const auto x_ = -x;
     const auto y_ = -y;
@@ -130,20 +130,20 @@ public:
   }
 
   template<typename X_, typename Y_, typename Z_>
-  [[nodiscard]] [[maybe_unused]] constexpr inline bool operator==(const Vec3<X_, Y_, Z_>& other) const noexcept
+  [[nodiscard]] constexpr inline bool operator==(const Vec3<X_, Y_, Z_>& other) const noexcept
   {
     return x == other.x && y == other.y && z == other.z;
   }
 
   template<typename X_, typename Y_, typename Z_>
-  [[nodiscard]] [[maybe_unused]] constexpr inline bool operator!=(const Vec3<X_, Y_, Z_>& other) const noexcept
+  [[nodiscard]] constexpr inline bool operator!=(const Vec3<X_, Y_, Z_>& other) const noexcept
   {
     return x != other.x || y != other.y || z != other.z;
   }
 };
 
 template<typename S, typename X, typename Y, typename Z>
-[[nodiscard]] [[maybe_unused]] constexpr inline auto
+[[nodiscard]] constexpr inline auto
 operator*(S s, Vec3<X, Y, Z> v) noexcept
 {
   const auto x_ = s * v.x;
@@ -153,7 +153,7 @@ operator*(S s, Vec3<X, Y, Z> v) noexcept
 }
 
 template<typename X, typename Y, typename Z>
-[[nodiscard]] [[maybe_unused]] constexpr inline auto
+[[nodiscard]] constexpr inline auto
 Abs(Vec3<X, Y, Z> v) noexcept
 {
   const auto x_ = Abs(v.x);
@@ -163,21 +163,21 @@ Abs(Vec3<X, Y, Z> v) noexcept
 }
 
 template<typename X0, typename Y0, typename Z0, typename X1, typename Y1, typename Z1>
-[[nodiscard]] [[maybe_unused]] constexpr inline auto
+[[nodiscard]] constexpr inline auto
 Dot(Vec3<X0, Y0, Z0> v0, Vec3<X1, Y1, Z1> v1) noexcept
 {
   return v0.x * v1.x + v0.y * v1.y + v0.z * v1.z;
 }
 
 template<typename X, typename Y, typename Z>
-[[nodiscard]] [[maybe_unused]] constexpr inline auto
+[[nodiscard]] constexpr inline auto
 Length(Vec3<X, Y, Z> v) noexcept
 {
   return Sqrt(Dot(v, v));
 }
 
 template<typename X, typename Y, typename Z>
-[[nodiscard]] [[maybe_unused]] constexpr inline auto
+[[nodiscard]] constexpr inline auto
 Normalize(Vec3<X, Y, Z> v) noexcept
 {
   return v / Length(v);

@@ -64,48 +64,6 @@ def ensure_venv():
         sys.exit()
 
 
-def ensure_glm(git: str, cmake: str):
-    glm_url = 'https://github.com/g-truc/glm.git'
-    glm_dir = abspath(join(dirname(__file__), 'extern', 'glm-source'))
-    glm_install_dir = abspath(join(dirname(__file__), 'extern', 'glm'))
-    glm_build_dir = join(glm_dir, 'cmake-build-release')
-
-    glm_options = [
-        '-DGLM_BUILD_LIBRARY=ON',
-        '-DGLM_BUILD_INSTALL=ON',
-        '-DGLM_BUILD_TESTS=OFF',
-        '-DGLM_ENABLE_CXX_20=ON',
-        '-DGLM_ENABLE_LANG_EXTENSIONS=ON',
-        '-DGLM_DISABLE_AUTO_DETECTION=OFF',
-        '-DGLM_ENABLE_FAST_MATH=OFF',
-        '-DGLM_ENABLE_SIMD_AVX=ON',
-        '-DGLM_ENABLE_SIMD_AVX2=ON',
-        '-DGLM_QUIET=OFF'
-    ]
-
-    cmake_options = [
-        '-S', glm_dir, '-B', glm_build_dir,
-        '-DCMAKE_BUILD_TYPE=Release',
-        f"-DCMAKE_INSTALL_PREFIX={glm_install_dir}",
-    ]
-
-    if not exists(glm_dir):
-        run([git, 'clone', glm_url, glm_dir])
-        run([git, 'checkout', '1.0.1'], cwd=glm_dir)
-
-    if not exists(glm_install_dir):
-        os.makedirs(glm_install_dir)
-
-    if not exists(glm_build_dir):
-        os.makedirs(glm_build_dir)
-
-    run([cmake] + cmake_options + glm_options)
-    run([cmake, '--build', glm_build_dir, '--config', 'Release'])
-    run([cmake, '--install', glm_build_dir, '--prefix', glm_install_dir])
-
-    return glm_install_dir
-
-
 def ensure_cnl(git: str, cmake: str):
     cnl_url = 'https://github.com/johnmcfarlane/cnl.git'
     cnl_dir = abspath(join(dirname(__file__), 'extern', 'cnl-source'))
@@ -259,10 +217,18 @@ def main():
     cmake = find_executable('cmake')
 
     config = abspath(join(dirname(__file__), 'cmake', 'config.cmake'))
-    glm_dir = ensure_glm(git, cmake)
+
+    append(config, 'set(_IGNORE_CMAKE_C_COMPILER "${CMAKE_C_COMPILER}")')
+    append(config, 'set(_IGNORE_Python3_EXECUTABLE "${Python3_EXECUTABLE}")')
+    append(config, 'set(_IGNORE_Python_EXECUTABLE "${Python_EXECUTABLE}")')
+
     cnl_dir = ensure_cnl(git, cmake)
     sdl_dir = ensure_sdl(git, cmake)
     absl_dir = ensure_absl(git, cmake)
+
+    append(config, f"set(CNL_DIR \"{cnl_dir}\")")
+    append(config, f"set(SDL_DIR \"{sdl_dir}\")")
+    append(config, f"set(ABSL_DIR \"{absl_dir}\")")
 
 
 if __name__ == '__main__':

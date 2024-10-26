@@ -8,19 +8,19 @@
 #include <utility>
 
 template<typename S>
-struct [[maybe_unused]] AABB
+struct AABB
 {
   Vec2<S> min;
   Vec2<S> max;
 
-  [[maybe_unused]] constexpr inline AABB(Vec2<S> min, Vec2<S> max) noexcept
+  constexpr inline AABB(Vec2<S> min, Vec2<S> max) noexcept
     : min(std::move(min))
     , max(std::move(max))
   {
   }
 };
 
-[[nodiscard]] [[maybe_unused]] constexpr inline auto
+[[nodiscard]] constexpr inline auto
 MinAABB(Circle circle) noexcept
 {
   const auto min_x = circle.p.x - circle.r;
@@ -30,7 +30,7 @@ MinAABB(Circle circle) noexcept
   return Vec2<S>{ min_x, min_y };
 }
 
-[[nodiscard]] [[maybe_unused]] constexpr inline auto
+[[nodiscard]] constexpr inline auto
 MinAABB(Dynamic dynamic) noexcept
 {
   const auto min_x = dynamic.p.x - dynamic.r + std::min(dynamic.v.x, Float{ 0.0f });
@@ -39,7 +39,7 @@ MinAABB(Dynamic dynamic) noexcept
   return Vec2<decltype(min_x)>{ min_x, min_y };
 }
 
-[[nodiscard]] [[maybe_unused]] constexpr inline auto
+[[nodiscard]] constexpr inline auto
 MaxAABB(Circle circle) noexcept
 {
   const auto max_x = circle.p.x + circle.r;
@@ -48,7 +48,7 @@ MaxAABB(Circle circle) noexcept
   return Vec2<decltype(max_x)>{ max_x, max_y };
 }
 
-[[nodiscard]] [[maybe_unused]] constexpr inline auto
+[[nodiscard]] constexpr inline auto
 MaxAABB(Dynamic dynamic) noexcept
 {
   const auto max_x = dynamic.p.x + dynamic.r + std::max(dynamic.v.x, Float{ 0.0f });
@@ -57,7 +57,7 @@ MaxAABB(Dynamic dynamic) noexcept
   return Vec2<decltype(max_x)>{ max_x, max_y };
 }
 
-[[nodiscard]] [[maybe_unused]] constexpr inline auto
+[[nodiscard]] constexpr inline auto
 MakeAABB(Circle circle) noexcept
 {
   const auto min = MinAABB(circle);
@@ -66,7 +66,7 @@ MakeAABB(Circle circle) noexcept
   return AABB<decltype(min.x)>{ { min.x, min.y }, { max.x, max.y } };
 }
 
-[[nodiscard]] [[maybe_unused]] constexpr inline auto
+[[nodiscard]] constexpr inline auto
 MakeAABB(Dynamic dynamic) noexcept
 {
   const auto min = MinAABB(dynamic);
@@ -76,7 +76,7 @@ MakeAABB(Dynamic dynamic) noexcept
 }
 
 template<typename SA, typename SB>
-[[nodiscard]] [[maybe_unused]] constexpr inline bool
+[[nodiscard]] constexpr inline bool
 MayCollide(AABB<SA> a, AABB<SB> b) noexcept
 {
   // clang-format off
