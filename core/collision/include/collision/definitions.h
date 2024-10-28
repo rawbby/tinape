@@ -20,9 +20,25 @@ using base::Dot;
 using base::Length;
 using base::Normalize;
 
+constexpr auto max_extend = 12u;
+constexpr auto min_extend = 4u;
+constexpr auto max_velocity = 4u;
+constexpr auto max_aabb_extend = 16u;
+
+constexpr auto max_extend_f = 12.0f;
+constexpr auto min_extend_f = 4.0f;
+constexpr auto max_velocity_f = 4.0f;
+constexpr auto max_aabb_extend_f = 16.0f;
+
+constexpr auto world_width = 512u;
+constexpr auto world_height = 256u;
+
+constexpr auto world_width_f = 512.0f;
+constexpr auto world_height_f = 256.0f;
+
 using Position = base::Fixed<1, 13, 10>;
-using Radius = base::Fixed<1, 13, 10>;
-using Velocity = base::Fixed<1, 13, 10>;
+using Radius = base::Fixed<0, 3, 13>;
+using Velocity = base::Fixed<1, 2, 13>;
 
 using Circle = base::Circle<Position, Radius>;
 using DynamicCircle = base::DynamicCircle<Position, Radius, Velocity>;
@@ -38,16 +54,6 @@ using R45BB = base::R45BB<MinX, MinY, MaxX, MaxY>;
 
 using base::MayOverlap;
 
-constexpr auto max_extend = 12u;
-constexpr auto min_extend = 4u;
-constexpr auto max_velocity = 4u;
-constexpr auto max_aabb_extend = 16u;
-
-constexpr auto max_extend_f = 12.0f;
-constexpr auto min_extend_f = 4.0f;
-constexpr auto max_velocity_f = 4.0f;
-constexpr auto max_aabb_extend_f = 16.0f;
-
 constexpr auto max_world_width = static_cast<unsigned>(static_cast<Index>(~0u) / max_aabb_extend);
 constexpr auto max_world_height = static_cast<unsigned>(static_cast<Index>(~0u) / max_aabb_extend);
 
@@ -59,12 +65,6 @@ constexpr auto max_world_height_f = static_cast<float>(max_world_height);
 
 // constexpr auto world_width_f = 4096.0f;
 // constexpr auto world_height_f = 2048.0f;
-
-constexpr auto world_width = 512u;
-constexpr auto world_height = 256u;
-
-constexpr auto world_width_f = 512.0f;
-constexpr auto world_height_f = 256.0f;
 
 constexpr inline Index
 Quantify(auto scalar) noexcept

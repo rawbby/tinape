@@ -59,20 +59,24 @@ struct [[maybe_unused]] HashGrid
       r45bbs.push_back(circle.R45BB());
     }
 
+    auto MayOverlap_ = [&aabbs, &r45bbs](Index i, Index j) {
+      return MayOverlap(aabbs[i], aabbs[j]) && MayOverlap(r45bbs[i], r45bbs[j]);
+    };
+
     for (auto key : keys) {
 
       // pairs within a bucket
       const auto [beg, end] = data.equal_range(key);
       for (auto i = beg; i != end; ++i)
         for (auto j = std::next(i); j != end; ++j)
-          if (MayOverlap(aabbs[i->second], aabbs[j->second]) && MayOverlap(r45bbs[i->second], r45bbs[j->second]))
+          if (MayOverlap_(i->second, j->second))
             consumer(i->second, j->second);
 
       // pairs within neighbourhood
       for (auto neighbour : HashGrid::Neighbours(key)) {
         for (auto i : Query(neighbour))
           for (auto j : Query(key))
-            if (MayOverlap(aabbs[i.second], aabbs[j.second]) && MayOverlap(r45bbs[i.second], r45bbs[j.second]))
+            if (MayOverlap_(i.second, j.second))
               consumer(i.second, j.second);
       }
     }

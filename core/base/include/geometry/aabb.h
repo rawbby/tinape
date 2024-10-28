@@ -4,6 +4,7 @@
 
 namespace base {
 
+/** Axis Aligned Bounding Box. Cheap to calculate upper bound for broad phase. */
 template<typename MinX, typename MinY, typename MaxX, typename MaxY>
 struct AABB
 {
@@ -17,6 +18,10 @@ struct AABB
   }
 };
 
+/**
+ * Axis Aligned Bounding Box in a 45 Degree Rotated (and Scaled) Universe.
+ * Surprisingly Cheap to calculate. Enhances the AABB broad phase check.
+ */
 template<typename MinX, typename MinY, typename MaxX, typename MaxY>
 struct R45BB
 {
