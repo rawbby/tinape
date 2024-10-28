@@ -40,7 +40,6 @@ protected:
 public:
   inline void Render(MyScene& scene)
   {
-
     SDL_SetRenderDrawColor(renderer, 15, 15, 15, 255);
     SDL_RenderClear(renderer);
 
@@ -49,6 +48,14 @@ public:
       SDL_SetRenderDrawColor(renderer, r, g, b, a);
       DrawCircle(renderer, scene.GetCircle(i));
       // DrawAABB(renderer, MakeAABB(scene.GetCircle(i)));
+    }
+
+    for (int i = 0; i < scene.GetLines().size(); ++i) {
+      const auto [r, g, b, a] = scene.GetColor(i % scene.GetCircles().size());
+      SDL_SetRenderDrawColor(renderer, r, g, b, a);
+      const auto p0 = Transform(Vec2<float>{ scene.GetLine(i).p });
+      const auto p1 = Transform(Vec2<float>{ scene.GetLine(i).p + scene.GetLine(i).e });
+      SDL_RenderLine(renderer, p0.x, p0.y, p1.x, p1.y);
     }
 
     SDL_RenderPresent(renderer);

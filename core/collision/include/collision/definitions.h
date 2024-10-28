@@ -39,9 +39,11 @@ constexpr auto world_height_f = 256.0f;
 using Position = base::Fixed<1, 13, 10>;
 using Radius = base::Fixed<0, 3, 13>;
 using Velocity = base::Fixed<1, 2, 13>;
+using Extend = base::Fixed<1, 5, 10>;
 
 using Circle = base::Circle<Position, Radius>;
 using DynamicCircle = base::DynamicCircle<Position, Radius, Velocity>;
+using LineSegment = base::LineSegment<Position, Extend>;
 
 using base::Advance;
 using base::Overlap;
@@ -54,24 +56,15 @@ using R45BB = base::R45BB<MinX, MinY, MaxX, MaxY>;
 
 using base::MayOverlap;
 
-constexpr auto max_world_width = static_cast<unsigned>(static_cast<Index>(~0u) / max_aabb_extend);
-constexpr auto max_world_height = static_cast<unsigned>(static_cast<Index>(~0u) / max_aabb_extend);
+// constexpr auto world_width = 4095u;
+// constexpr auto world_height = 2047u;
 
-constexpr auto max_world_width_f = static_cast<float>(max_world_width);
-constexpr auto max_world_height_f = static_cast<float>(max_world_height);
-
-// constexpr auto world_width = 4096u;
-// constexpr auto world_height = 2048u;
-
-// constexpr auto world_width_f = 4096.0f;
-// constexpr auto world_height_f = 2048.0f;
+// constexpr auto world_width_f = 4095.0f;
+// constexpr auto world_height_f = 2047.0f;
 
 constexpr inline Index
 Quantify(auto scalar) noexcept
 {
-  static_assert(world_width <= max_world_width);
-  static_assert(world_height <= max_world_height);
-
   auto index = cnl::floor(scalar);
   index >>= std::countr_zero(max_aabb_extend);
   return static_cast<Index>(index);

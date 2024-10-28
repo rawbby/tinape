@@ -15,7 +15,7 @@ main(int, char**)
   network.Init();
   window.Init();
 
-  constexpr auto number_of_circles = 1 << 11;
+  constexpr auto number_of_circles = 1 << 9; // MAX 11
   scene.Init(number_of_circles);
   game.Init(&scene);
 

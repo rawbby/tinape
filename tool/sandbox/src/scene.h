@@ -15,6 +15,7 @@ protected:
   std::mt19937 mt;
 
   std::vector<DynamicCircle> circles{};
+  std::vector<LineSegment> lines{};
   std::vector<SDL_Color> colors{};
 
 public:
@@ -27,6 +28,27 @@ public:
   bool Init(Index n)
   {
     FillRandomCircles(n);
+
+    const auto min_x = 0.5f * max_extend_f;
+    const auto min_y = 0.5f * max_extend_f;
+    const auto max_w = world_width_f - min_x;
+    const auto max_h = world_height_f - min_y;
+
+    Vec2<Position> tl{ min_x, min_y };
+    Vec2<Position> tr{ max_w, min_y };
+    Vec2<Position> br{ max_w, max_h };
+    Vec2<Position> bl{ min_x, max_h };
+
+    base::LineSegment<Position, Position> a{ tl, (tr - tl) };
+    base::LineSegment<Position, Position> b{ tr, (br - tr) };
+    base::LineSegment<Position, Position> c{ br, (bl - br) };
+    base::LineSegment<Position, Position> d{ bl, (tl - bl) };
+
+    a.Subdivide<Extend, max_aabb_extend>(lines);
+    b.Subdivide<Extend, max_aabb_extend>(lines);
+    c.Subdivide<Extend, max_aabb_extend>(lines);
+    d.Subdivide<Extend, max_aabb_extend>(lines);
+
     return true;
   }
 
@@ -40,6 +62,16 @@ public:
   DynamicCircle& GetCircle(Index index)
   {
     return circles[index];
+  }
+
+  std::span<LineSegment> GetLines()
+  {
+    return lines;
+  }
+
+  LineSegment& GetLine(Index index)
+  {
+    return lines[index];
   }
 
   std::span<SDL_Color> GetColors()
@@ -60,7 +92,7 @@ public:
 
   Vec2<Position> RandomPoint()
   {
-    const auto r = static_cast<float>(0.5f * max_extend_f);
+    const auto r = static_cast<float>(max_extend_f);
     const auto x = dist_t(r, world_width - r)(mt);
     const auto y = dist_t(r, world_height - r)(mt);
     return { x, y };
