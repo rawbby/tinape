@@ -128,7 +128,7 @@ public:
 
   inline bool Init()
   {
-    if (SDLNet_Init()) {
+    if (!SDLNet_Init()) {
       SDL_Log("SDLNet_Init failed: %s\n", SDL_GetError());
       return false;
     }

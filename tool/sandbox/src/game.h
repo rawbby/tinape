@@ -2,11 +2,7 @@
 
 #include "./scene.h"
 
-#include <accelerator/adjacency_list.h>
-#include <accelerator/constraint.h>
-#include <accelerator/hash_grid.h>
-#include <geometry/circle.h>
-#include <type/index.h>
+#include <collision.h>
 
 class MyGame
 {
@@ -22,19 +18,19 @@ public:
     return true;
   }
 
-  static bool IsBlockingStepping(Dynamic a, Dynamic b, float dt)
+  static bool IsBlockingStepping(DynamicCircle a, DynamicCircle b, float dt)
   {
     const auto ci0 = Circle{ a.p, a.r };
     const auto cj0 = Circle{ b.p, b.r };
     const auto ci5 = Circle{ a.p + dt * a.v, a.r };
     const auto cj5 = Circle{ b.p + dt * b.v, b.r };
     // clang-format off
-  return Overlap(ci0, cj0) || Overlap(ci0, cj5)
-      || Overlap(ci5, cj0) || Overlap(ci5, cj5);
+    return Overlap(ci0, cj0) || Overlap(ci0, cj5)
+        || Overlap(ci5, cj0) || Overlap(ci5, cj5);
     // clang-format on
   }
 
-  void HandleIsland(std::span<Dynamic> circles, std::span<Index> island, std::unordered_multimap<Index, Index>& island_edges)
+  void HandleIsland(std::span<DynamicCircle> circles, std::span<Index> island, std::unordered_multimap<Index, Index>& island_edges)
   {
     const auto color = scene->RandomColor();
 
@@ -58,7 +54,7 @@ public:
 
     for (int i = 0; i < n; ++i) {
       scene->GetColor(island[i]) = SDL_Color(color.r, color.g, color.b, 255);
-      circles[island[i]].v = Vec2F{};
+      circles[island[i]].v = Vec2<Velocity>{};
     }
   }
 
@@ -84,17 +80,17 @@ public:
     for (auto& circle : circles) {
       circle.p += circle.v;
 
-      if (circle.v == Vec2F{} && scene->RandomBool() && scene->RandomBool() && scene->RandomBool() && scene->RandomBool())
+      if (circle.v == Vec2<Velocity>{} && scene->RandomBool() && scene->RandomBool() && scene->RandomBool() && scene->RandomBool())
         circle.v = scene->RandomVelocity();
 
-      if (circle.p.x < c0)
-        circle.v.x = scene->RandomBool() ? constraint::max_velocity_f : 0.0f;
-      if (circle.p.x > constraint::world_width)
-        circle.v.x = scene->RandomBool() ? -constraint::max_velocity_f : 0.0f;
-      if (circle.p.y < c0)
-        circle.v.y = scene->RandomBool() ? constraint::max_velocity_f : 0.0f;
-      if (circle.p.y > constraint::world_height)
-        circle.v.y = scene->RandomBool() ? -constraint::max_velocity_f : 0.0f;
+      if (circle.p.x < base::c0)
+        circle.v.x = scene->RandomBool() ? 2.0f : 0.0f;
+      if (circle.p.x > world_width)
+        circle.v.x = scene->RandomBool() ? -2.0f : 0.0f;
+      if (circle.p.y < base::c0)
+        circle.v.y = scene->RandomBool() ? 2.0f : 0.0f;
+      if (circle.p.y > world_height)
+        circle.v.y = scene->RandomBool() ? -2.0f : 0.0f;
     }
   }
 

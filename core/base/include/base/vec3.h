@@ -2,6 +2,8 @@
 
 #include <type_traits>
 
+namespace base {
+
 template<typename X, typename Y = X, typename Z = X>
 class Vec3
 {
@@ -173,7 +175,7 @@ template<typename X, typename Y, typename Z>
 [[nodiscard]] constexpr inline auto
 Length(Vec3<X, Y, Z> v) noexcept
 {
-  return Sqrt(Dot(v, v));
+  return cnl::sqrt(Dot(v, v));
 }
 
 template<typename X, typename Y, typename Z>
@@ -181,4 +183,6 @@ template<typename X, typename Y, typename Z>
 Normalize(Vec3<X, Y, Z> v) noexcept
 {
   return v / Length(v);
+}
+
 }

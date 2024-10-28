@@ -2,6 +2,8 @@
 
 #include <type_traits>
 
+namespace base {
+
 template<typename X, typename Y = X>
 class Vec2
 {
@@ -157,7 +159,7 @@ template<typename X, typename Y>
 [[nodiscard]] constexpr inline auto
 Length(Vec2<X, Y> v) noexcept
 {
-  return Sqrt(Dot(v, v));
+  return cnl::sqrt(Dot(v, v));
 }
 
 template<typename X, typename Y>
@@ -165,4 +167,6 @@ template<typename X, typename Y>
 Normalize(Vec2<X, Y> v) noexcept
 {
   return v / Length(v);
+}
+
 }

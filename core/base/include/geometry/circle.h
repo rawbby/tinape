@@ -1,96 +1,47 @@
 #pragma once
 
-#include "../type/float.h"
-#include "../type/traits.h"
+#include "../base.h"
 
+#include "./aabb.h"
+
+namespace base {
+
+template<typename Position, typename Radius>
 struct Circle
 {
-  Vec2F p;
-  Float r;
-};
+  Vec2<Position> p;
+  Radius r;
 
-struct Dynamic
-{
-  Vec2F p;
-  Float r;
-  Vec2F v;
-};
-
-[[nodiscard]] constexpr inline bool
-DoCollide(Dynamic d0, Dynamic d1) noexcept
-{
-  // Equation to solve for t:
-  // |(d0.p + t * d0.v) - (d1.p + t * d1.v)| <= d0.r + d1.r
-  // <=> (dvv)t^2 + (2dpv)t + dpp <= x*x
-
-  const auto x = d1.r + d0.r;
-  const auto xx = (x * x);
-
-  // *** CHECK FOR COLLISION AT t=0 ***
-
-  const auto dp = d1.p - d0.p;
-  const auto dpp = Dot(dp, dp);
-  const auto c = dpp;
-
-  if (c <= xx)
-    return true; // colliding at t=0
-
-  // *** CHECK FOR COLLISION AT t=1 ***
-
-  const auto v0_ = Vec2F{ d0.p + d0.v } - d0.p;
-  const auto v1_ = Vec2F{ d1.p + d1.v } - d1.p;
-  const auto dv = v1_ - v0_;
-  // ensure the velocity is accurate with roundings
-  // const auto dv = (dt * d1.v) - (dt * d0.v);
-
-  const auto dpv = Dot(dp, dv);
-  const auto dvv = Dot(dv, dv);
-  const auto a = dvv;
-  const auto b = dpv + dpv;
-
-  if (a + b + c <= xx)
-    return true; // colliding at t=1
-
-  // *** ANALYSE DERIVATIVE FOR CLOSEST POINT ***
-  // 2at + b = 0 <=> t = -b / 2a
-
-  if (b > c0)
-    return false; // Closest Point at t<0
-
-  const auto a2 = a + a;
-  if (-b > a2)
-    return false; // Closest Point at t>1
-
-  if (a == c0) {
-    if (b == c0) // Constant Equation
-      return c <= xx;
-    // Linear Equation
-    // 0 = bt + c <=> t_min = -c / b
-    const auto t_min = -c / b;
-    return t_min < c1 && t_min > c0;
+  constexpr inline auto AABB() const noexcept
+  {
+    const auto min_x = p.x - r;
+    const auto min_y = p.y - r;
+    const auto max_x = p.x + r;
+    const auto max_y = p.y + r;
+    return base::AABB{ min_x, min_y, max_x, max_y };
   }
 
-  // Closest Point at 0 < t < 1:
-  // t = -b / (a + a) <=> c - (bb / a4)
-  return c - (b * b) / (a2 + a2) <= xx;
-}
+  constexpr inline auto R45BB() const noexcept
+  {
+    const auto x_ = p.x - p.y;
+    const auto y_ = p.x + p.y;
+    const auto r_ = r * sqrt2ub;
 
+    const auto min_x = x_ - r_;
+    const auto min_y = y_ - r_;
+    const auto max_x = x_ + r_;
+    const auto max_y = y_ + r_;
+    return base::R45BB{ min_x, min_y, max_x, max_y };
+  }
+};
+
+template<typename PositionA, typename RadiusA, typename PositionB, typename RadiusB>
 [[nodiscard]] constexpr inline bool
-Overlap(Circle a, Circle b) noexcept
+Overlap(Circle<PositionA, RadiusA> a, Circle<PositionB, RadiusB> b) noexcept
 {
   const auto x = b.r + a.r;
   const auto dp = b.p - a.p;
   return Dot(dp, dp) <= x * x;
 }
 
-[[nodiscard]] constexpr inline Circle
-Advance(Dynamic dynamic) noexcept
-{
-  return { dynamic.p + dynamic.v, dynamic.r };
-}
-
-[[nodiscard]] constexpr inline Circle
-Advance(Dynamic dynamic, auto dt) noexcept
-{
-  return { dynamic.p + dt * dynamic.v, dynamic.r };
 }

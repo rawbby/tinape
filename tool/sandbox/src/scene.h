@@ -1,11 +1,6 @@
 #pragma once
 
-#include <type/float.h>
-#include <type/index.h>
-
-#include <geometry/aabb.h>
-#include <geometry/circle.h>
-
+#include <collision.h>
 #include <platform.h>
 
 #include <random>
@@ -19,7 +14,7 @@ protected:
   std::random_device rd;
   std::mt19937 mt;
 
-  std::vector<Dynamic> circles{};
+  std::vector<DynamicCircle> circles{};
   std::vector<SDL_Color> colors{};
 
 public:
@@ -37,12 +32,12 @@ public:
 
   ~MyScene() = default;
 
-  std::span<Dynamic> GetCircles()
+  std::span<DynamicCircle> GetCircles()
   {
     return circles;
   }
 
-  Dynamic& GetCircle(Index index)
+  DynamicCircle& GetCircle(Index index)
   {
     return circles[index];
   }
@@ -63,24 +58,24 @@ public:
     return std::uniform_int_distribution(-1, 1)(mt);
   }
 
-  Vec2F RandomPoint()
+  Vec2<Position> RandomPoint()
   {
-    const auto puffer = static_cast<float>(c_5 * constraint::max_extend);
-    const auto x = dist_t(puffer, constraint::world_width - puffer)(mt);
-    const auto y = dist_t(puffer, constraint::world_height - puffer)(mt);
+    const auto r = static_cast<float>(0.5f * max_extend_f);
+    const auto x = dist_t(r, world_width - r)(mt);
+    const auto y = dist_t(r, world_height - r)(mt);
     return { x, y };
   }
 
-  Vec2F RandomVelocity()
+  Vec2<Velocity> RandomVelocity()
   {
     const auto a = dist_t(0.0f, 2.0f * std::numbers::pi_v<float>)(mt);
-    const auto v = dist_t(0.0f, constraint::max_velocity_f)(mt);
+    const auto v = dist_t(0.0f, max_velocity_f)(mt);
     return { std::cos(a) * v, std::sin(a) * v };
   }
 
-  Float RandomRadius()
+  Radius RandomRadius()
   {
-    return dist_t(constraint::min_extend_f, constraint::max_extend_f)(mt);
+    return dist_t(0.5f * min_extend_f, 0.5f * max_extend_f)(mt);
   }
 
   SDL_Color RandomColor()

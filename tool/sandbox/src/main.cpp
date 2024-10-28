@@ -15,7 +15,7 @@ main(int, char**)
   network.Init();
   window.Init();
 
-  constexpr auto number_of_circles = 1 << 12;
+  constexpr auto number_of_circles = 1 << 11;
   scene.Init(number_of_circles);
   game.Init(&scene);
 
@@ -30,7 +30,7 @@ main(int, char**)
     const auto t_end = SDL_GetTicksNS();
 
     SDL_Log("%f fps; update: %lu ns \n", 1000.0 / (static_cast<double>(ti - t0) / 1000000.0), t_end - t_beg);
-    SDL_Delay(20);
+    SDL_Delay(12);
 
     t0 = ti;
 

@@ -1,10 +1,7 @@
 #pragma once
 
-#include <container/query_iterable.h>
-#include <type/index.h>
-
-#include <absl/container/flat_hash_set.h>
-#include <absl/container/inlined_vector.h>
+#include "./definitions.h"
+#include "./query_iterable.h"
 
 #include <stack>
 #include <unordered_map>
@@ -13,7 +10,7 @@
 
 struct AdjacencyList
 {
-  absl::flat_hash_set<Index, IndexHash> keys{};
+  std::unordered_set<Index> keys{};
   std::unordered_multimap<Index, Index> data{};
 
   [[maybe_unused]] inline void AddEdge(Index a, Index b) noexcept
@@ -34,19 +31,19 @@ struct AdjacencyList
   {
     // DFS
 
-    absl::InlinedVector<Index, 64> stack{};
-    absl::InlinedVector<Index, 64> island{};
+    std::stack<Index> s{};
+    std::vector<Index> island{};
     std::unordered_multimap<Index, Index> island_edges{};
 
     while (!keys.empty()) {
-      stack.push_back(*keys.begin());
-      while (!stack.empty()) {
-        auto v = Index{ stack.back() };
-        stack.pop_back();
+      s.push(*keys.begin());
+      while (!s.empty()) {
+        auto v = s.top();
+        s.pop();
         if (keys.erase(v)) {
           island.push_back(v);
           for (auto [_, w] : Query(v)) {
-            stack.push_back(w);
+            s.push(w);
             island_edges.emplace(v, w);
           }
         }
