@@ -8,7 +8,7 @@
 inline void
 Exit(int code = 1)
 {
-  std::exit(code);
+  std::exit(code); // NOLINT(concurrency-mt-unsafe)
 }
 
 inline void

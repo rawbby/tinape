@@ -14,16 +14,16 @@ protected:
 public:
   UDP_Socket() = default;
 
-  inline bool Init(const char* host, int port, int resolve_timeout_ms = 5000)
+  bool Init(const char* host, int port, int resolve_timeout_ms = 5000)
   {
-    const auto address = SDLNet_ResolveHostname(host);
+    auto *const address = SDLNet_ResolveHostname(host);
     if (SDLNet_WaitUntilResolved(address, resolve_timeout_ms) < 0) {
       SDL_Log("SDLNet_WaitUntilResolved failed: %s\n", SDL_GetError());
       return false;
     }
 
     handle = SDLNet_CreateDatagramSocket(address, port);
-    if (!handle) {
+    if (handle == nullptr) {
       SDL_Log("SDLNet_CreateDatagramSocket failed: %s\n", SDL_GetError());
       return false;
     }
@@ -31,7 +31,7 @@ public:
     return true;
   }
 
-  inline void PollDatagram(auto callback)
+  void PollDatagram(auto callback)
   {
     SDLNet_Datagram* datagram = nullptr;
 
@@ -42,8 +42,9 @@ public:
         return;
       }
 
-      if (!datagram)
+      if (!datagram) {
         return;
+}
 
       callback(datagram);
       SDLNet_DestroyDatagram(datagram);
@@ -52,8 +53,9 @@ public:
 
   ~UDP_Socket()
   {
-    if (handle)
+    if (handle != nullptr) {
       SDLNet_DestroyDatagramSocket(handle);
+}
   }
 };
 
@@ -65,16 +67,16 @@ protected:
 public:
   TCP_Client() = default;
 
-  inline bool Init(const char* host, int port, int resolve_timeout_ms = 5000)
+  bool Init(const char* host, int port, int resolve_timeout_ms = 5000)
   {
-    const auto address = SDLNet_ResolveHostname(host);
+    auto *const address = SDLNet_ResolveHostname(host);
     if (SDLNet_WaitUntilResolved(address, resolve_timeout_ms) < 0) {
       SDL_Log("SDLNet_WaitUntilResolved failed: %s\n", SDL_GetError());
       return false;
     }
 
     handle = SDLNet_CreateClient(address, port);
-    if (!handle) {
+    if (handle == nullptr) {
       SDL_Log("SDLNet_CreateClient failed: %s\n", SDL_GetError());
       return false;
     }
@@ -84,8 +86,9 @@ public:
 
   ~TCP_Client()
   {
-    if (handle)
+    if (handle != nullptr) {
       SDLNet_DestroyStreamSocket(handle);
+}
   }
 };
 
@@ -97,16 +100,16 @@ protected:
 public:
   TCP_Server() = default;
 
-  inline bool Init(const char* host, int port, int resolve_timeout_ms = 5000)
+  bool Init(const char* host, int port, int resolve_timeout_ms = 5000)
   {
-    const auto address = SDLNet_ResolveHostname(host);
+    auto *const address = SDLNet_ResolveHostname(host);
     if (SDLNet_WaitUntilResolved(address, resolve_timeout_ms) < 0) {
       SDL_Log("SDLNet_WaitUntilResolved failed: %s\n", SDL_GetError());
       return false;
     }
 
     handle = SDLNet_CreateServer(address, port);
-    if (!handle) {
+    if (handle == nullptr) {
       SDL_Log("SDLNet_CreateServer failed: %s\n", SDL_GetError());
       return false;
     }
@@ -116,8 +119,9 @@ public:
 
   ~TCP_Server()
   {
-    if (handle)
+    if (handle != nullptr) {
       SDLNet_DestroyServer(handle);
+}
   }
 };
 
@@ -126,7 +130,7 @@ class Network
 public:
   Network() = default;
 
-  inline bool Init()
+  static bool Init()
   {
     if (!SDLNet_Init()) {
       SDL_Log("SDLNet_Init failed: %s\n", SDL_GetError());

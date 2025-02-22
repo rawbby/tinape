@@ -1,4 +1,5 @@
 #include <base/fixed.h>
+#include <type_traits>
 
 int
 main()

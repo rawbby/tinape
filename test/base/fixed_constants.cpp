@@ -1,6 +1,10 @@
 #include <base/fixed.h>
+#include <bit>
+#include <cstdint>
 
-constexpr inline void
+#include <numbers>
+
+constexpr static void
 CheckSizeOfSum(auto value)
 {
   static_assert(sizeof(value + value + value + value + value + value + value) == 1);
@@ -151,6 +155,6 @@ main()
 
   static_assert(sqrt2ub < c2);
   static_assert(c1 < sqrt2ub);
-  static_assert(sqrt2ub == 1.414215087890625);
+  static_assert(sqrt2ub == std::numbers::sqrt2);
   static_assert(sizeof(sqrt2ub) == 2);
 }

@@ -15,13 +15,13 @@ public:
   virtual bool Init()
   {
     handle = SDL_CreateWindow("", 0, 0, SDL_WINDOW_HIDDEN | SDL_WINDOW_VULKAN);
-    if (!handle) {
+    if (handle == nullptr) {
       Log("SDL_CreateWindow failed: %s\n", SDL_GetError());
       return false;
     }
 
     const auto display = SDL_GetDisplayForWindow(handle);
-    const auto display_mode = SDL_GetCurrentDisplayMode(display);
+    const auto* const display_mode = SDL_GetCurrentDisplayMode(display);
 
     bool status = true;
     status &= SDL_SetWindowSize(handle, display_mode->w, display_mode->h);
@@ -40,17 +40,19 @@ public:
     return true;
   }
 
-  inline void PollEvents(auto callback)
+  void PollEvents(auto callback)
   {
     SDL_Event event;
-    while (SDL_PollEvent(&event) && callback(&event))
+    while (SDL_PollEvent(&event) && callback(&event)) {
       ;
+    }
   }
 
-  ~Window()
+  virtual ~Window()
   {
-    if (handle)
+    if (handle != nullptr) {
       SDL_DestroyWindow(handle);
+    }
   }
 };
 
@@ -67,9 +69,11 @@ public:
     Window::Init();
 
     auto vulkan_driver_found = false;
-    for (int i = 0; i < SDL_GetNumRenderDrivers(); ++i)
-      if (!strcmp(SDL_GetRenderDriver(i), "vulkan"))
+    for (int i = 0; i < SDL_GetNumRenderDrivers(); ++i) {
+      if (strcmp(SDL_GetRenderDriver(i), "vulkan") == 0) {
         vulkan_driver_found = true;
+      }
+    }
 
     if (!vulkan_driver_found) {
       Log("vulkan renderer driver not found\n");
@@ -79,7 +83,7 @@ public:
     }
 
     renderer = SDL_CreateRenderer(handle, "vulkan");
-    if (!renderer) {
+    if (renderer == nullptr) {
       Log("SDL_CreateRenderer failed: %s\n", SDL_GetError());
       SDL_DestroyWindow(handle);
       handle = nullptr;
@@ -89,10 +93,11 @@ public:
     return true;
   }
 
-  ~RendererWindow()
+  ~RendererWindow() override
   {
-    if (renderer)
+    if (renderer != nullptr) {
       SDL_DestroyRenderer(renderer);
+    }
     Window::~Window();
   }
 };

@@ -20,26 +20,26 @@ using base::Dot;
 using base::Length;
 using base::Normalize;
 
-constexpr auto max_extend = 12u;
-constexpr auto min_extend = 4u;
-constexpr auto max_velocity = 4u;
-constexpr auto max_aabb_extend = 16u;
+constexpr auto max_extend = 12U;
+constexpr auto min_extend = 4U;
+constexpr auto max_velocity = 4U;
+constexpr auto max_aabb_extend = 16U;
 
-constexpr auto max_extend_f = 12.0f;
-constexpr auto min_extend_f = 4.0f;
-constexpr auto max_velocity_f = 4.0f;
-constexpr auto max_aabb_extend_f = 16.0f;
+constexpr auto max_extend_f = 12.0F;
+constexpr auto min_extend_f = 4.0F;
+constexpr auto max_velocity_f = 4.0F;
+constexpr auto max_aabb_extend_f = 16.0F;
 
-constexpr auto world_width = 512u;
-constexpr auto world_height = 256u;
+constexpr auto world_width = 512U;
+constexpr auto world_height = 256U;
 
-constexpr auto world_width_f = 512.0f;
-constexpr auto world_height_f = 256.0f;
+constexpr auto world_width_f = 512.0F;
+constexpr auto world_height_f = 256.0F;
 
-using Position = base::Fixed<1, 13, 10>;
-using Radius = base::Fixed<0, 3, 13>;
-using Velocity = base::Fixed<1, 2, 13>;
-using Extend = base::Fixed<1, 5, 10>;
+using Position = base::Fixed<1, 13, 10>; // NOLINT(*-magic-numbers)
+using Radius = base::Fixed<0, 3, 13>;    // NOLINT(*-magic-numbers)
+using Velocity = base::Fixed<1, 2, 13>;  // NOLINT(*-magic-numbers)
+using Extend = base::Fixed<1, 5, 10>;    // NOLINT(*-magic-numbers)
 
 using Circle = base::Circle<Position, Radius>;
 using DynamicCircle = base::DynamicCircle<Position, Radius, Velocity>;
@@ -62,7 +62,7 @@ using base::MayOverlap;
 // constexpr auto world_width_f = 4095.0f;
 // constexpr auto world_height_f = 2047.0f;
 
-constexpr inline Index
+constexpr Index
 Quantify(auto scalar) noexcept
 {
   auto index = cnl::floor(scalar);
@@ -70,14 +70,14 @@ Quantify(auto scalar) noexcept
   return static_cast<Index>(index);
 }
 
-constexpr inline IndexPair
+constexpr IndexPair
 Quantify(auto a, auto b) noexcept
 {
   return { Quantify(a), Quantify(b) };
 }
 
 template<typename S>
-constexpr inline IndexPair
+constexpr IndexPair
 Quantify(Vec2<S> s) noexcept
 {
   return { Quantify(s.x), Quantify(s.y) };

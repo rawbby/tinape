@@ -1,11 +1,24 @@
 cmake_minimum_required(VERSION 3.10)
 
 project(Tinape
-        VERSION 0.0.1
+        VERSION 1.0
         LANGUAGES CXX)
 
-include(cmake/all.cmake)
+if (NOT EXISTS "${CMAKE_BINARY_DIR}/bootstrap.cmake")
+    file(DOWNLOAD
+            "https://raw.githubusercontent.com/rawbby/cmake_utilities/refs/tags/v2.3.6/bootstrap.cmake"
+            "${CMAKE_BINARY_DIR}/bootstrap.cmake")
+endif ()
 
-add_tests_directory(test)
-add_libraries_directory(core)
-add_executables_directory(tool)
+set(CMAKE_PREFIX_PATH
+        "${CMAKE_SOURCE_DIR}/extern/cnl/lib/cmake"
+        "${CMAKE_SOURCE_DIR}/extern/sdl/lib/cmake")
+
+include("${CMAKE_BINARY_DIR}/bootstrap.cmake")
+include(.cmake_utilities/modules/all.cmake)
+
+file(COPY "${CMAKE_SOURCE_DIR}/.cmake_utilities/scripts/run.py" "${CMAKE_SOURCE_DIR}/.cmake_utilities/scripts/file_lock.py" DESTINATION "${CMAKE_SOURCE_DIR}/extern")
+python("${CMAKE_SOURCE_DIR}/bootstrap.py")
+include(extern/config.cmake)
+
+structured_directories()

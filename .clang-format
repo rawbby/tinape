@@ -1,6 +1,6 @@
 BasedOnStyle: Mozilla
-TabWidth: 4
+TabWidth: 2
 UseTab: Never
-ColumnLimit: 180
+ColumnLimit: 0
 AllowShortFunctionsOnASingleLine: Empty
 AllowShortLambdasOnASingleLine: Empty

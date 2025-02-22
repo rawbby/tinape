@@ -11,7 +11,7 @@ struct AABB
   Vec2<MinX, MinY> min;
   Vec2<MinX, MinY> max;
 
-  constexpr inline AABB(MinX min_x, MinY min_y, MaxX max_x, MaxY max_y) noexcept
+  constexpr AABB(MinX min_x, MinY min_y, MaxX max_x, MaxY max_y) noexcept
     : min(min_x, min_y)
     , max(max_x, max_y)
   {
@@ -28,7 +28,7 @@ struct R45BB
   Vec2<MinX, MinY> min;
   Vec2<MaxX, MaxY> max;
 
-  constexpr inline R45BB(MinX min_x, MinY min_y, MaxX max_x, MaxY max_y) noexcept
+  constexpr R45BB(MinX min_x, MinY min_y, MaxX max_x, MaxY max_y) noexcept
     : min(min_x, min_y)
     , max(max_x, max_y)
   {
@@ -38,7 +38,7 @@ struct R45BB
 // clang-format off
 template<typename AMinX, typename AMinY, typename AMaxX, typename AMaxY,
          typename BMinX, typename BMinY, typename BMaxX, typename BMaxY>
-constexpr inline bool
+constexpr bool
 MayOverlap(AABB<AMinX, AMinY, AMaxX, AMaxY> a, AABB<BMinX, BMinY, BMaxX, BMaxY> b) noexcept
 {
 return (a.min.x < b.max.x && a.max.x > b.min.x) &&  // Overlap on the X axis
@@ -49,7 +49,7 @@ return (a.min.x < b.max.x && a.max.x > b.min.x) &&  // Overlap on the X axis
 // clang-format off
 template<typename AMinX, typename AMinY, typename AMaxX, typename AMaxY,
          typename BMinX, typename BMinY, typename BMaxX, typename BMaxY>
-constexpr inline bool
+constexpr bool
 MayOverlap(R45BB<AMinX, AMinY, AMaxX, AMaxY> a, R45BB<BMinX, BMinY, BMaxX, BMaxY> b) noexcept
 {
 return (a.min.x < b.max.x && a.max.x > b.min.x) &&  // Overlap on the X axis

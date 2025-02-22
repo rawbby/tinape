@@ -6,28 +6,28 @@
 class MyWindow : public RendererWindow
 {
 protected:
-  static inline Vec2<float> Transform(Vec2<float> vec)
+  static Vec2<float> Transform(Vec2<float> vec)
   {
-    constexpr auto factor = 3.63f;
+    constexpr auto factor = 3.63F;
     constexpr auto offset = Vec2<float>{ max_extend, max_extend };
     return factor * offset + (factor * vec);
   }
 
-  static inline void DrawCircle(SDL_Renderer* renderer, DynamicCircle circle)
+  static void DrawCircle(SDL_Renderer* renderer, DynamicCircle circle)
   {
     constexpr int n = 15;
 
-    Vec2<float> a = Transform(Vec2<float>{ circle.p } + Vec2<float>{ circle.r, 0.0f });
+    Vec2<float> a = Transform(Vec2<float>{ circle.p } + Vec2<float>{ circle.r, 0.0F });
     for (int i = 1; i <= n; ++i) {
-      auto theta = (static_cast<float>(i) * 2.0f * std::numbers::pi_v<float>) / static_cast<float>(n);
-      Vec2<float> b = Transform(Vec2<float>{ circle.p } + Vec2<float>{ circle.r * std::cos(theta), circle.r * std::sin(theta) });
+      auto theta = (static_cast<float>(i) * 2.0F * std::numbers::pi_v<float>) / static_cast<float>(n);
+      Vec2<float> const b = Transform(Vec2<float>{ circle.p } + Vec2<float>{ circle.r * std::cos(theta), circle.r * std::sin(theta) });
       SDL_RenderLine(renderer, a.x, a.y, b.x, b.y);
       a = b;
     }
   }
 
   template<typename MinX, typename MinY, typename MaxX, typename MaxY>
-  static inline void DrawAABB(SDL_Renderer* renderer, AABB<MinX, MinY, MaxX, MaxY> c)
+  static void DrawAABB(SDL_Renderer* renderer, AABB<MinX, MinY, MaxX, MaxY> c)
   {
     const auto min = Transform(Vec2<float>{ c.min });
     const auto max = Transform(Vec2<float>{ c.max });
@@ -38,7 +38,7 @@ protected:
   }
 
 public:
-  inline void Render(MyScene& scene)
+  void Render(MyScene& scene)
   {
     SDL_SetRenderDrawColor(renderer, 15, 15, 15, 255);
     SDL_RenderClear(renderer);

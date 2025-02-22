@@ -10,10 +10,10 @@
 
 struct AdjacencyList
 {
-  std::unordered_set<Index> keys{};
-  std::unordered_multimap<Index, Index> data{};
+  std::unordered_set<Index> keys;
+  std::unordered_multimap<Index, Index> data;
 
-  [[maybe_unused]] inline void AddEdge(Index a, Index b) noexcept
+  [[maybe_unused]] void AddEdge(Index a, Index b) noexcept
   {
     keys.insert(a);
     keys.insert(b);
@@ -21,13 +21,13 @@ struct AdjacencyList
     data.insert({ b, a });
   }
 
-  [[nodiscard]] [[maybe_unused]] inline auto Query(Index key) noexcept
+  [[nodiscard]] [[maybe_unused]] auto Query(Index key) noexcept
   {
     auto [beg, end] = data.equal_range(key);
     return QueryIterable{ beg, end };
   }
 
-  [[nodiscard]] [[maybe_unused]] inline auto QueryIslands(auto consumer) noexcept
+  [[nodiscard]] [[maybe_unused]] auto QueryIslands(auto consumer) noexcept
   {
     // DFS
 

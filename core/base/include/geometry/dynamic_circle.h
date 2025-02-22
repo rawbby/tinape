@@ -14,7 +14,7 @@ struct DynamicCircle
   Radius r;
   Vec2<Velocity> v;
 
-  constexpr inline auto AABB() const
+  [[nodiscard]] constexpr auto AABB() const
   {
     const auto min_x = p.x - r + std::min<decltype(v.x)>(v.x, static_cast<decltype(v.x)>(c0));
     const auto min_y = p.y - r + std::min<decltype(v.y)>(v.y, static_cast<decltype(v.y)>(c0));
@@ -23,7 +23,7 @@ struct DynamicCircle
     return base::AABB{ min_x, min_y, max_x, max_y };
   }
 
-  constexpr inline auto R45BB() const
+  [[nodiscard]] constexpr auto R45BB() const
   {
     const auto vx_ = v.x - v.y;
     const auto vy_ = v.x + v.y;
@@ -41,7 +41,7 @@ struct DynamicCircle
 // clang-format off
 template<typename Position0, typename Radius0, typename Velocity0,
          typename Position1, typename Radius1, typename Velocity1>
-constexpr inline bool
+constexpr bool
 Overlap(DynamicCircle<Position0, Radius0, Velocity0> d0, DynamicCircle<Position1, Radius1, Velocity1> d1) noexcept
 {
   // Equation to solve for t:
@@ -57,8 +57,9 @@ Overlap(DynamicCircle<Position0, Radius0, Velocity0> d0, DynamicCircle<Position1
   const auto dpp = Dot(dp, dp);
   const auto c = dpp;
 
-  if (c <= xx)
+  if (c <= xx) {
     return true; // colliding at t=0
+}
 
   // *** CHECK FOR COLLISION AT t=1 ***
 
@@ -73,22 +74,26 @@ Overlap(DynamicCircle<Position0, Radius0, Velocity0> d0, DynamicCircle<Position1
   const auto a = dvv;
   const auto b = dpv + dpv;
 
-  if (a + b + c <= xx)
+  if (a + b + c <= xx) {
     return true; // colliding at t=1
+}
 
   // *** ANALYSE DERIVATIVE FOR CLOSEST POINT ***
   // 2at + b = 0 <=> t = -b / 2a
 
-  if (b > c0)
+  if (b > c0) {
     return false; // Closest Point at t<0
+}
 
   const auto a2 = a + a;
-  if (-b > a2)
+  if (-b > a2) {
     return false; // Closest Point at t>1
+}
 
   if (a == c0) {
-    if (b == c0) // Constant Equation
+    if (b == c0) { // Constant Equation
       return c <= xx;
+}
     // Linear Equation
     // 0 = bt + c <=> t_min = -c / b
     const auto t_min = -c / b;
@@ -104,7 +109,7 @@ Overlap(DynamicCircle<Position0, Radius0, Velocity0> d0, DynamicCircle<Position1
 // clang-format off
 template<typename Position0, typename Radius0,
          typename Position1, typename Radius1, typename Velocity1>
-constexpr inline bool
+constexpr bool
 Overlap(Circle<Position0, Radius0> d0, DynamicCircle<Position1, Radius1, Velocity1> d1) noexcept
 {
   // Equation to solve for t:
@@ -120,8 +125,9 @@ Overlap(Circle<Position0, Radius0> d0, DynamicCircle<Position1, Radius1, Velocit
   const auto dpp = Dot(dp, dp);
   const auto c = dpp;
 
-  if (c <= xx)
+  if (c <= xx) {
     return true; // colliding at t=0
+}
 
   // *** CHECK FOR COLLISION AT t=1 ***
 
@@ -134,22 +140,26 @@ Overlap(Circle<Position0, Radius0> d0, DynamicCircle<Position1, Radius1, Velocit
   const auto a = dvv;
   const auto b = dpv + dpv;
 
-  if (a + b + c <= xx)
+  if (a + b + c <= xx) {
     return true; // colliding at t=1
+}
 
   // *** ANALYSE DERIVATIVE FOR CLOSEST POINT ***
   // 2at + b = 0 <=> t = -b / 2a
 
-  if (b > c0)
+  if (b > c0) {
     return false; // Closest Point at t<0
+}
 
   const auto a2 = a + a;
-  if (-b > a2)
+  if (-b > a2) {
     return false; // Closest Point at t>1
+}
 
   if (a == c0) {
-    if (b == c0) // Constant Equation
+    if (b == c0) { // Constant Equation
       return c <= xx;
+}
     // Linear Equation
     // 0 = bt + c <=> t_min = -c / b
     const auto t_min = -c / b;
@@ -165,7 +175,7 @@ Overlap(Circle<Position0, Radius0> d0, DynamicCircle<Position1, Radius1, Velocit
 // clang-format off
 template<typename Position0, typename Radius0, typename Velocity0,
          typename Position1, typename Radius1>
-constexpr inline bool
+constexpr bool
 Overlap(DynamicCircle<Position0, Radius0, Velocity0> d0, Circle<Position1, Radius1> d1) noexcept
 {
   return Overlap(d1,d0);
@@ -173,7 +183,7 @@ Overlap(DynamicCircle<Position0, Radius0, Velocity0> d0, Circle<Position1, Radiu
 // clang-format on
 
 template<typename Position, typename Radius, typename Velocity>
-constexpr inline auto
+constexpr auto
 Advance(DynamicCircle<Position, Radius, Velocity> dynamic) noexcept
 {
   const auto p_ = dynamic.p + dynamic.v;
@@ -183,7 +193,7 @@ Advance(DynamicCircle<Position, Radius, Velocity> dynamic) noexcept
 }
 
 template<typename Position, typename Radius, typename Velocity>
-constexpr inline auto
+constexpr auto
 Advance(DynamicCircle<Position, Radius, Velocity> dynamic, auto dt) noexcept
 {
   const auto p_ = dynamic.p + dt * dynamic.v;

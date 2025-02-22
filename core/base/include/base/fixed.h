@@ -4,46 +4,49 @@
 #include <cnl/scaled_integer.h>
 
 #include <bit>
+#include <numbers>
 
 namespace base {
 
 namespace internal {
 
 template<int CONDITION, typename IF_TRUE, typename IF_FALSE>
-constexpr inline auto
+constexpr auto
 ConditionalType() noexcept
 {
-  if constexpr (CONDITION)
+  if constexpr (CONDITION) {
     return IF_TRUE{};
-  else
+  } else {
     return IF_FALSE{};
+  }
 }
 
 template<int CONDITION, typename IF_TRUE, typename IF_FALSE>
 using ConditionalTypeV = decltype(ConditionalType<CONDITION, IF_TRUE, IF_FALSE>());
 
-template<int SIGNED, int BITS>
-constexpr inline auto
+template<int SIGNED, unsigned BITS>
+constexpr auto
 NarrowestInteger() noexcept
 {
-  constexpr int BITS_ = SIGNED + (BITS >> 3) + (BITS & 0b111 ? 1 : 0);
-  if constexpr (BITS_ == 1)
+  constexpr int BITS_ = SIGNED + (BITS >> 3U) + (BITS & 0b111U ? 1U : 0U);
+  if constexpr (BITS_ == 1U) {
     return ConditionalType<SIGNED, std::int8_t, std::uint8_t>();
-  else if constexpr (BITS_ <= 2)
+  } else if constexpr (BITS_ <= 2U) {
     return ConditionalType<SIGNED, std::int16_t, std::uint16_t>();
-  else if constexpr (BITS_ <= 4)
+  } else if constexpr (BITS_ <= 4U) {
     return ConditionalType<SIGNED, std::int32_t, std::uint32_t>();
-  else if constexpr (BITS_ <= 8)
+  } else if constexpr (BITS_ <= 8U) { // NOLINT(*-magic-numbers)
     return ConditionalType<SIGNED, std::int64_t, std::uint64_t>();
-  else
+  } else {
     return ConditionalType<SIGNED, __int128, unsigned __int128>();
+  }
 }
 
 template<int SIGNED, int BITS>
 using NarrowestIntegerV = decltype(NarrowestInteger<SIGNED, BITS>());
 
 template<int POWER>
-constexpr inline auto
+constexpr auto
 PowerOfTwo() noexcept
 {
   // use bit cast to allow every power of two representation using only one byte
@@ -85,6 +88,6 @@ constexpr auto c4096 = internal::PowerOfTwo<12>();
 // sqrt2   = 1.011_0101_0000_0100_11110011001100111111100111011110011001001000010001011001011111011000100110110011011
 // sqrt2ub = 1.011_0101_0000_0101
 // [dec]   = 1.414215087890625
-constexpr auto sqrt2ub = Fixed<0, 1, 15>{ 1.414215087890625 };
+constexpr auto sqrt2ub = Fixed<0, 1, 15>{ std::numbers::sqrt2 };
 
 }

@@ -12,7 +12,7 @@ struct Circle
   Vec2<Position> p;
   Radius r;
 
-  constexpr inline auto AABB() const noexcept
+  [[nodiscard]] constexpr auto AABB() const noexcept
   {
     const auto min_x = p.x - r;
     const auto min_y = p.y - r;
@@ -21,7 +21,7 @@ struct Circle
     return base::AABB{ min_x, min_y, max_x, max_y };
   }
 
-  constexpr inline auto R45BB() const noexcept
+  [[nodiscard]] constexpr auto R45BB() const noexcept
   {
     const auto x_ = p.x - p.y;
     const auto y_ = p.x + p.y;
@@ -36,7 +36,7 @@ struct Circle
 };
 
 template<typename PositionA, typename RadiusA, typename PositionB, typename RadiusB>
-[[nodiscard]] constexpr inline bool
+[[nodiscard]] constexpr bool
 Overlap(Circle<PositionA, RadiusA> a, Circle<PositionB, RadiusB> b) noexcept
 {
   const auto x = b.r + a.r;
@@ -45,7 +45,7 @@ Overlap(Circle<PositionA, RadiusA> a, Circle<PositionB, RadiusB> b) noexcept
 }
 
 template<typename PositionA, typename RadiusA, typename PositionB>
-[[nodiscard]] constexpr inline bool
+[[nodiscard]] constexpr bool
 Overlap(Circle<PositionA, RadiusA> a, Vec2<PositionB> b) noexcept
 {
   const auto d = b - a.p;
@@ -53,7 +53,7 @@ Overlap(Circle<PositionA, RadiusA> a, Vec2<PositionB> b) noexcept
 }
 
 template<typename Position0, typename Position1, typename Radius1>
-[[nodiscard]] constexpr inline bool
+[[nodiscard]] constexpr bool
 Overlap(Vec2<Position0> p0, Circle<Position1, Radius1> c1) noexcept
 {
   const auto d = p0 - c1.p;

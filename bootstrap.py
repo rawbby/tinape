@@ -1,6 +1,10 @@
 import os
 import sys
 from os.path import join, dirname, abspath, isfile, exists
+from pathlib import Path
+
+from extern.file_lock import FileLock
+from extern.run import *
 
 
 def append(file_path, line):
@@ -18,24 +22,6 @@ def append(file_path, line):
             file.write(line + '\n')
 
 
-def run(command: [str], cwd=None) -> str:
-    from subprocess import Popen, PIPE, STDOUT
-
-    cwd = cwd if cwd is not None else join(dirname(__file__))
-
-    print(' '.join(command), flush=True)
-    process = Popen(command, stdout=PIPE, stderr=STDOUT, text=True, cwd=cwd)
-    stdout = ''
-    for stdout_line in iter(process.stdout.readline, ''):
-        stdout += stdout_line
-        print(stdout_line, end='', flush=True)
-    process.stdout.close()
-    status = process.wait()
-    if status:
-        sys.exit(status)
-    return stdout
-
-
 def find_executable(executable_name: str) -> str:
     if os.name == 'nt':
         executable_name += '.exe'
@@ -47,21 +33,6 @@ def find_executable(executable_name: str) -> str:
 
     print(f"Failed to find executable {executable_name}")
     sys.exit(1)
-
-
-def ensure_venv():
-    venv_path = abspath(join(dirname(__file__), '.venv'))
-    if os.name == 'nt':
-        venv_executable = join(venv_path, 'Scripts', 'python.exe')
-    else:
-        venv_executable = join(venv_path, 'bin', 'python')
-
-    if not exists(venv_executable):
-        run([sys.executable, '-m', 'venv', '.venv'])
-
-    if sys.executable != venv_executable:
-        run([venv_executable, __file__] + sys.argv[1:])
-        sys.exit()
 
 
 def ensure_cnl(git: str, cmake: str):
@@ -213,24 +184,27 @@ def ensure_sdl(git: str, cmake: str):
 
 
 def main():
-    git = find_executable('git')
-    cmake = find_executable('cmake')
+    lock_filename = abspath(join(os.getcwd(), 'extern', '.lock'))
+    valid_file = Path(abspath(join(os.getcwd(), 'extern', '.valid')))
 
-    config = abspath(join(dirname(__file__), 'cmake', 'config.cmake'))
+    with FileLock(lock_filename):
+        if valid_file.exists():
+            return
 
-    append(config, 'set(_IGNORE_CMAKE_C_COMPILER "${CMAKE_C_COMPILER}")')
-    append(config, 'set(_IGNORE_Python3_EXECUTABLE "${Python3_EXECUTABLE}")')
-    append(config, 'set(_IGNORE_Python_EXECUTABLE "${Python_EXECUTABLE}")')
+        git = find_executable('git')
+        cmake = find_executable('cmake')
 
-    cnl_dir = ensure_cnl(git, cmake)
-    sdl_dir = ensure_sdl(git, cmake)
-    absl_dir = ensure_absl(git, cmake)
+        cnl_dir = ensure_cnl(git, cmake).replace('\\', '/')
+        sdl_dir = ensure_sdl(git, cmake).replace('\\', '/')
+        absl_dir = ensure_absl(git, cmake).replace('\\', '/')
 
-    append(config, f"set(CNL_DIR \"{cnl_dir.replace('\\', '/')}\")")
-    append(config, f"set(SDL_DIR \"{sdl_dir.replace('\\', '/')}\")")
-    append(config, f"set(ABSL_DIR \"{absl_dir.replace('\\', '/')}\")")
+        config = abspath(join(os.getcwd(), 'extern', 'config.cmake'))
+        append(config, f'set(CNL_DIR "{cnl_dir}")')
+        append(config, f'set(SDL_DIR "{sdl_dir}")')
+        append(config, f'set(ABSL_DIR "{absl_dir}")')
+
+        valid_file.touch()
 
 
 if __name__ == '__main__':
-    ensure_venv()
     main()

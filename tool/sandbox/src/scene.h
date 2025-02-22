@@ -14,14 +14,14 @@ protected:
   std::random_device rd;
   std::mt19937 mt;
 
-  std::vector<DynamicCircle> circles{};
-  std::vector<LineSegment> lines{};
-  std::vector<SDL_Color> colors{};
+  std::vector<DynamicCircle> circles;
+  std::vector<LineSegment> lines;
+  std::vector<SDL_Color> colors;
 
 public:
   MyScene()
-    : rd()
-    , mt(rd())
+    : 
+     mt(rd())
   {
   }
 
@@ -29,20 +29,20 @@ public:
   {
     FillRandomCircles(n);
 
-    const auto min_x = 0.5f * max_extend_f;
-    const auto min_y = 0.5f * max_extend_f;
+    const auto min_x = 0.5F * max_extend_f;
+    const auto min_y = 0.5F * max_extend_f;
     const auto max_w = world_width_f - min_x;
     const auto max_h = world_height_f - min_y;
 
-    Vec2<Position> tl{ min_x, min_y };
-    Vec2<Position> tr{ max_w, min_y };
-    Vec2<Position> br{ max_w, max_h };
-    Vec2<Position> bl{ min_x, max_h };
+    Vec2<Position> const tl{ min_x, min_y };
+    Vec2<Position> const tr{ max_w, min_y };
+    Vec2<Position> const br{ max_w, max_h };
+    Vec2<Position> const bl{ min_x, max_h };
 
-    base::LineSegment<Position, Position> a{ tl, (tr - tl) };
-    base::LineSegment<Position, Position> b{ tr, (br - tr) };
-    base::LineSegment<Position, Position> c{ br, (bl - br) };
-    base::LineSegment<Position, Position> d{ bl, (tl - bl) };
+    base::LineSegment<Position, Position> const a{ .p=tl, .e=(tr - tl) };
+    base::LineSegment<Position, Position> const b{ .p=tr, .e=(br - tr) };
+    base::LineSegment<Position, Position> const c{ .p=br, .e=(bl - br) };
+    base::LineSegment<Position, Position> const d{ .p=bl, .e=(tl - bl) };
 
     a.Subdivide<Extend, max_aabb_extend>(lines);
     b.Subdivide<Extend, max_aabb_extend>(lines);
@@ -84,10 +84,10 @@ public:
     return colors[index];
   }
 
-public:
+
   bool RandomBool()
   {
-    return std::uniform_int_distribution(-1, 1)(mt);
+    return std::uniform_int_distribution(-1, 1)(mt) != 0;
   }
 
   Vec2<Position> RandomPoint()
@@ -100,14 +100,14 @@ public:
 
   Vec2<Velocity> RandomVelocity()
   {
-    const auto a = dist_t(0.0f, 2.0f * std::numbers::pi_v<float>)(mt);
-    const auto v = dist_t(0.0f, max_velocity_f)(mt);
+    const auto a = dist_t(0.0F, 2.0F * std::numbers::pi_v<float>)(mt);
+    const auto v = dist_t(0.0F, max_velocity_f)(mt);
     return { std::cos(a) * v, std::sin(a) * v };
   }
 
   Radius RandomRadius()
   {
-    return dist_t(0.5f * min_extend_f, 0.5f * max_extend_f)(mt);
+    return dist_t(0.5F * min_extend_f, 0.5F * max_extend_f)(mt);
   }
 
   SDL_Color RandomColor()

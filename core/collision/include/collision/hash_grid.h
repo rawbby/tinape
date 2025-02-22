@@ -10,30 +10,30 @@
 
 struct [[maybe_unused]] HashGrid
 {
-  std::unordered_set<IndexPair> keys{};
-  std::unordered_multimap<IndexPair, Index> data{};
+  std::unordered_set<IndexPair> keys;
+  std::unordered_multimap<IndexPair, Index> data;
 
-  [[maybe_unused]] inline void Push(Index id, Circle circle) noexcept
+  [[maybe_unused]] void Push(Index id, Circle circle) noexcept
   {
     const auto key = Quantify(circle.AABB().min);
     keys.emplace(key);
     data.emplace(key, id);
   }
 
-  [[maybe_unused]] inline void Push(Index id, DynamicCircle dynamic) noexcept
+  [[maybe_unused]] void Push(Index id, DynamicCircle dynamic) noexcept
   {
     const auto key = Quantify(dynamic.AABB().min);
     keys.emplace(key);
     data.emplace(key, id);
   }
 
-  [[maybe_unused]] inline void Reserve(Index size) noexcept
+  [[maybe_unused]] void Reserve(Index size) noexcept
   {
     keys.reserve(size);
     data.reserve(size);
   }
 
-  [[nodiscard]] [[maybe_unused]] constexpr inline static auto Neighbours(IndexPair x) noexcept
+  [[nodiscard]] [[maybe_unused]] constexpr static auto Neighbours(IndexPair x) noexcept
   {
     const auto n0 = x + IndexPair{ 1, 0 };
     const auto n1 = x + IndexPair{ -1, 1 };
@@ -42,13 +42,13 @@ struct [[maybe_unused]] HashGrid
     return std::array{ n0, n1, n2, n3 };
   }
 
-  [[nodiscard]] [[maybe_unused]] inline auto Query(IndexPair key) noexcept
+  [[nodiscard]] [[maybe_unused]] auto Query(IndexPair key) noexcept
   {
     auto [beg, end] = data.equal_range(key);
     return QueryIterable{ beg, end };
   }
 
-  [[nodiscard]] [[maybe_unused]] inline auto Query(const auto& circles, auto consumer) noexcept
+  [[nodiscard]] [[maybe_unused]] auto Query(const auto& circles, auto consumer) noexcept
   {
     std::vector<decltype(DynamicCircle{}.AABB())> aabbs{};
     std::vector<decltype(DynamicCircle{}.R45BB())> r45bbs{};
@@ -67,17 +67,23 @@ struct [[maybe_unused]] HashGrid
 
       // pairs within a bucket
       const auto [beg, end] = data.equal_range(key);
-      for (auto i = beg; i != end; ++i)
-        for (auto j = std::next(i); j != end; ++j)
-          if (MayOverlap_(i->second, j->second))
+      for (auto i = beg; i != end; ++i) {
+        for (auto j = std::next(i); j != end; ++j) {
+          if (MayOverlap_(i->second, j->second)) {
             consumer(i->second, j->second);
+}
+}
+}
 
       // pairs within neighbourhood
       for (auto neighbour : HashGrid::Neighbours(key)) {
-        for (auto i : Query(neighbour))
-          for (auto j : Query(key))
-            if (MayOverlap_(i.second, j.second))
+        for (auto i : Query(neighbour)) {
+          for (auto j : Query(key)) {
+            if (MayOverlap_(i.second, j.second)) {
               consumer(i.second, j.second);
+}
+}
+}
       }
     }
   }

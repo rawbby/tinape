@@ -15,10 +15,10 @@ namespace std {
 template<>
 struct hash<base::IndexPair>
 {
-  typedef std::size_t result_type;
-  typedef base::IndexPair argument_type;
+  using result_type = std::size_t;
+  using argument_type = base::IndexPair;
 
-  [[nodiscard]] inline result_type operator()(argument_type pair) const noexcept
+  [[nodiscard]] result_type operator()(argument_type pair) const noexcept
   {
     return std::bit_cast<std::uint32_t>(pair);
   }
