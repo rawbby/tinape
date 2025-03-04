@@ -48,10 +48,10 @@ foreach (TARGET_DIR ${STATIC_DIRS})
             ARCHIVE DESTINATION "${TARGET_ARCHIVE_INSTALL_DIRECTORY}")
 
     if (${TARGET_CLANG_TIDY_AUTO_SOURCE})
-        clang_tidy_sources(${TARGET_SRC} ${TARGET_INC})
+        clang_tidy_sources(${TARGET_SRC} ${TARGET_INCLUDE})
     endif ()
     if (${TARGET_CLANG_FORMAT_AUTO_SOURCE})
-        clang_format_sources(${TARGET_SRC} ${TARGET_INC})
+        clang_format_sources(${TARGET_SRC} ${TARGET_INCLUDE})
     endif ()
 
     message("${PROJECT_NAME} - Added Static Library       ${TARGET_NAME}")

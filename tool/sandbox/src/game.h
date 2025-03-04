@@ -50,8 +50,8 @@ public:
       for (int i = 0; i < n; ++i) {
         if (!blocked.contains(island[i])) {
           circles[island[i]].p += 0.125F * circles[island[i]].v;
-}
-}
+        }
+      }
     }
 
     for (int i = 0; i < n; ++i) {
@@ -69,7 +69,7 @@ public:
     grid.Reserve(circles.size());
     for (int i = 0; i < circles.size(); ++i) {
       grid.Push(i, circles[i]);
-}
+    }
 
     static AdjacencyList archipelago{};
     archipelago.Clear();
@@ -85,20 +85,20 @@ public:
 
       if (circle.v == Vec2<Velocity>{} && scene->RandomBool() && scene->RandomBool() && scene->RandomBool() && scene->RandomBool()) {
         circle.v = scene->RandomVelocity();
-}
+      }
 
       if (circle.p.x < base::c0) {
         circle.v.x = scene->RandomBool() ? 2.0F : 0.0F;
-}
+      }
       if (circle.p.x > world_width) {
         circle.v.x = scene->RandomBool() ? -2.0F : 0.0F;
-}
+      }
       if (circle.p.y < base::c0) {
         circle.v.y = scene->RandomBool() ? 2.0F : 0.0F;
-}
+      }
       if (circle.p.y > world_height) {
         circle.v.y = scene->RandomBool() ? -2.0F : 0.0F;
-}
+      }
     }
   }
 

@@ -71,19 +71,19 @@ struct [[maybe_unused]] HashGrid
         for (auto j = std::next(i); j != end; ++j) {
           if (MayOverlap_(i->second, j->second)) {
             consumer(i->second, j->second);
-}
-}
-}
+          }
+        }
+      }
 
       // pairs within neighbourhood
-      for (auto neighbour : HashGrid::Neighbours(key)) {
+      for (auto neighbour : Neighbours(key)) {
         for (auto i : Query(neighbour)) {
           for (auto j : Query(key)) {
             if (MayOverlap_(i.second, j.second)) {
               consumer(i.second, j.second);
-}
-}
-}
+            }
+          }
+        }
       }
     }
   }

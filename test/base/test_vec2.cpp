@@ -1,5 +1,5 @@
-#include "base/vec2.h"
 #include "base/index.h"
+#include "base/vec2.h"
 
 int
 main()

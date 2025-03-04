@@ -140,35 +140,31 @@ Overlap(Circle<Position0, Radius0> d0, DynamicCircle<Position1, Radius1, Velocit
   const auto a = dvv;
   const auto b = dpv + dpv;
 
-  if (a + b + c <= xx) {
+  if (a + b + c <= xx)
     return true; // colliding at t=1
-}
 
   // *** ANALYSE DERIVATIVE FOR CLOSEST POINT ***
   // 2at + b = 0 <=> t = -b / 2a
 
-  if (b > c0) {
+  if (b > c0)
     return false; // Closest Point at t<0
-}
 
   const auto a2 = a + a;
-  if (-b > a2) {
+  if (-b > a2)
     return false; // Closest Point at t>1
-}
 
   if (a == c0) {
-    if (b == c0) { // Constant Equation
+    if (b == c0) // Constant Equation
       return c <= xx;
-}
     // Linear Equation
     // 0 = bt + c <=> t_min = -c / b
-    const auto t_min = -c / b;
-    return t_min < c1 && t_min > c0;
+    return -c < (c1 * b) && -c > (c0 * b);
   }
 
   // Closest Point at 0 < t < 1:
   // t = -b / (a + a) <=> c - (bb / a4)
-  return c - (b * b) / (a2 + a2) <= xx;
+  const auto a4 = a2 + a2;
+  return c * a4 - b * b <= xx * a4;
 }
 // clang-format on
 

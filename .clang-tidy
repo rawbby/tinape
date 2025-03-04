@@ -1,8 +1,4 @@
-Checks: '-*,bugprone-*,cert-*,clang-analyzer-*,concurrency-*,cppcoreguidelines-*,hicpp-*,misc-*,modernize-*,performance-*,portability-*,readability-*,
--readability-identifier-length,
--modernize-use-trailing-return-type,
--misc-non-private-member-variables-in-classes,
--cppcoreguidelines-avoid-const-or-ref-data-members'
+Checks: '-*'
 HeaderFilterRegex: '.*'
 WarningsAsErrors: '*'
 FormatStyle: none

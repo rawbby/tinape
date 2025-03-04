@@ -33,6 +33,11 @@ struct LineSegment
       last = container.emplace_back(p_, (end - p_) / i);
     }
   }
+
+  [[nodiscard]] Vec2<Position> Min() const
+  {
+    return { Min(p.x, p.x + e.x), Min(p.y, p.y + e.y) };
+  }
 };
 
 namespace internal {
@@ -40,11 +45,11 @@ namespace internal {
 constexpr auto
 Clamp01(auto value)
 {
-  if (value < base::c0) {
-    return decltype(value){ base::c0 };
+  if (value < c0) {
+    return decltype(value){ c0 };
   }
-  if (value > base::c1) {
-    return decltype(value){ base::c1 };
+  if (value > c1) {
+    return decltype(value){ c1 };
   }
   return value;
 }
@@ -56,7 +61,7 @@ constexpr bool
 Overlap(LineSegment<Position0, Extend0> l, Circle<Position1, Radius1> c) noexcept
 {
   const auto ee = Dot(l.e, l.e);
-  if (ee == 0.0) {
+  if (ee == c0) {
     return Overlap(c, l.p);
   }
 
