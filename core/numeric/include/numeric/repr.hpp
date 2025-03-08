@@ -4,6 +4,8 @@
 #include "./bits.hpp"
 #include "./sign.hpp"
 
+#include <type_traits>
+
 namespace numeric {
 
 namespace internal {
@@ -35,14 +37,42 @@ template<Sign S, Bits B>
 using Repr = decltype(internal::repr_helper_<S, B>());
 
 template<typename T>
-concept IsRepr = std::is_same_v<i64, T> || std::is_same_v<i32, T> || std::is_same_v<i16, T> || std::is_same_v<i8, T> || std::is_same_v<u64, T> || std::is_same_v<u32, T> || std::is_same_v<u16, T> || std::is_same_v<u8, T>;
+concept IsRepr =
+  std::is_same_v<std::remove_cvref_t<T>, i64> ||
+  std::is_same_v<std::remove_cvref_t<T>, i32> ||
+  std::is_same_v<std::remove_cvref_t<T>, i16> ||
+  std::is_same_v<std::remove_cvref_t<T>, i8> ||
+  std::is_same_v<std::remove_cvref_t<T>, u64> ||
+  std::is_same_v<std::remove_cvref_t<T>, u32> ||
+  std::is_same_v<std::remove_cvref_t<T>, u16> ||
+  std::is_same_v<std::remove_cvref_t<T>, u8>;
+
+template<typename T>
+concept IsFloat =
+  std::is_same_v<std::remove_cvref_t<T>, float> ||
+  std::is_same_v<std::remove_cvref_t<T>, double>;
+
+template<typename T>
+concept IsReprOrFloat = IsRepr<T> || IsFloat<T>;
 
 constexpr auto
 lshift(IsRepr auto repr, i64 shift)
 {
-  if (shift < 0)
-    return repr >> static_cast<Bits>(-shift);
-  return repr << static_cast<Bits>(shift);
+  using urepr = Repr<POS, sizeof(repr) << 3>;
+
+  if constexpr (std::is_signed_v<decltype(repr)>) {
+
+    if (repr < 0)
+      return static_cast<decltype(repr)>(-lshift(static_cast<urepr>(-repr), shift));
+    return static_cast<decltype(repr)>(lshift(static_cast<urepr>(repr), shift));
+
+  } else {
+
+    if (shift < 0)
+      return static_cast<decltype(repr)>(repr >> static_cast<Bits>(-shift));
+    return static_cast<decltype(repr)>(repr << static_cast<Bits>(shift));
+
+  }
 }
 
 constexpr auto

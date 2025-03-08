@@ -1,7 +1,5 @@
 #pragma once
 
-#include "./base/fixed.h"
-
 #include "./base/index.h"
 
 #include "./base/vec2.h"

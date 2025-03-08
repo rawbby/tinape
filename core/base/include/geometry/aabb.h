@@ -18,6 +18,9 @@ struct AABB
   }
 };
 
+/// helper constant for creating 45 deg rotations
+constexpr double double_sqrt2ub = std::nextafter(std::numbers::sqrt2_v<double>, std::numeric_limits<double>::max());
+
 /**
  * Axis Aligned Bounding Box in a 45 Degree Rotated (and Scaled) Universe.
  * Surprisingly Cheap to calculate. Enhances the AABB broad phase check.

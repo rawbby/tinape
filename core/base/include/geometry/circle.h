@@ -21,7 +21,7 @@ struct Circle
     return base::AABB{ min_x, min_y, max_x, max_y };
   }
 
-  [[nodiscard]] constexpr auto R45BB() const noexcept
+  [[nodiscard]] constexpr auto R45BB(auto sqrt2ub = double_sqrt2ub) const noexcept
   {
     const auto x_ = p.x - p.y;
     const auto y_ = p.x + p.y;

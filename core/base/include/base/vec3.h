@@ -170,11 +170,11 @@ Dot(Vec3<X0, Y0, Z0> v0, Vec3<X1, Y1, Z1> v1) noexcept
   return v0.x * v1.x + v0.y * v1.y + v0.z * v1.z;
 }
 
-template<typename X, typename Y, typename Z>
+template<typename X, typename Y, typename Z, typename Sqrt>
 [[nodiscard]] constexpr auto
-Length(Vec3<X, Y, Z> v) noexcept
+Length(Vec3<X, Y, Z> v, Sqrt sqrt = std::sqrt) noexcept
 {
-  return cnl::sqrt(Dot(v, v));
+  return sqrt(Dot(v, v));
 }
 
 template<typename X, typename Y, typename Z>

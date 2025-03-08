@@ -68,7 +68,7 @@ constexpr auto
 operator/(Int<S_, B_> lhs, Int<S, B> rhs)
 {
   static_assert(S != NIL, "division by zero");
-  DEBUG_ASSERT_NE(rhs.repr_, 0, "division by zero");
+  //DEBUG_ASSERT_NE(rhs.repr_, 0, "division by zero");
 
   if constexpr (S_ == NIL)
     return Int<NIL, 0U>{};

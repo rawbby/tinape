@@ -1,10 +1,11 @@
 #pragma once
 
+#include "./ieee754.hpp"
 #include "./repr.hpp"
 
 #include <algorithm>
-#include <limits>
 #include <bit>
+#include <limits>
 
 namespace numeric {
 
@@ -42,42 +43,10 @@ public:
   {
   }
 
-  constexpr Fixed(double ieee754)
+  constexpr Fixed(IsFloat auto ieee754)
   {
-    static_assert(std::numeric_limits<double>::is_iec559);
-    const auto raw = std::bit_cast<u64>(ieee754);
-
-    const auto bias_exp = static_cast<i32>(mask_shift<63, 52>(raw));
-    const auto exponent = bias_exp ? (bias_exp - 1023) : -1022;
-    DEBUG_ASSERT_NE(bias_exp, 0x7FF, "nan and inf unsupported");
-
-    const auto fraction = mask<52, 0>(raw);
-    const auto mantissa = bias_exp ? set_bits<53>(fraction) : fraction;
-    repr_ = lshift(mantissa, exponent - 52 - P_);
-
-    if (S_ == VAR && mask<64>(raw))
-      repr_ = -repr_;
-
-    repr_ = repr_cast<S_, B_>(repr_);
-  }
-
-  constexpr Fixed(float ieee754)
-  {
-    static_assert(std::numeric_limits<float>::is_iec559);
-    const auto raw = std::bit_cast<u32>(ieee754);
-
-    const auto bias_exp = static_cast<i32>(mask_shift<31, 23>(raw));
-    const auto exponent = bias_exp ? (bias_exp - 127) : -126;
-    DEBUG_ASSERT_NE(bias_exp, 0xFF, "nan and inf unsupported");
-
-    const auto fraction = mask<23, 0>(raw);
-    const auto mantissa = bias_exp ? set_bits<24>(fraction) : fraction;
-    repr_ = lshift(mantissa, exponent - 23 - P_);
-
-    if (S_ == VAR && mask<32>(raw))
-      repr_ = -repr_;
-
-    repr_ = repr_cast<S_, B_>(repr_);
+    const auto [s, p] = ieee754::decompose<decltype(ieee754)>(ieee754);
+    repr_ = repr_cast<S_, B_>(lshift(s, p - P_));
   }
 
   static constexpr Fixed from_repr(IsRepr auto repr)

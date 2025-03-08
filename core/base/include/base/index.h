@@ -2,8 +2,7 @@
 
 #include "./vec2.h"
 
-#include <absl/hash/hash.h>
-
+#include <bit>
 #include <cstdint>
 
 namespace base {

@@ -4,8 +4,6 @@
 
 #include "../base.h"
 
-#include <cnl/all.h>
-
 namespace base {
 
 template<typename Position, typename Extend>
@@ -19,7 +17,7 @@ struct LineSegment
   {
     static_assert(MaxLength <= std::numeric_limits<Extend_>::max());
 
-    auto s = std::max(cnl::abs(e.x), cnl::abs(e.y)) / MaxLength; // #subdivisions
+    auto s = std::max(abs(e.x), abs(e.y)) / MaxLength; // #subdivisions
     auto i = static_cast<unsigned>(s);
     if (i < s) {
       ++i;
@@ -45,11 +43,11 @@ namespace internal {
 constexpr auto
 Clamp01(auto value)
 {
-  if (value < c0) {
-    return decltype(value){ c0 };
+  if (value < 0) {
+    return decltype(value){ 0 };
   }
-  if (value > c1) {
-    return decltype(value){ c1 };
+  if (value > 1) {
+    return decltype(value){ 1 };
   }
   return value;
 }
@@ -61,7 +59,7 @@ constexpr bool
 Overlap(LineSegment<Position0, Extend0> l, Circle<Position1, Radius1> c) noexcept
 {
   const auto ee = Dot(l.e, l.e);
-  if (ee == c0) {
+  if (ee == 0) {
     return Overlap(c, l.p);
   }
 

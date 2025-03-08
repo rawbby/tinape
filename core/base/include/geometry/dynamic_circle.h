@@ -16,24 +16,24 @@ struct DynamicCircle
 
   [[nodiscard]] constexpr auto AABB() const
   {
-    const auto min_x = p.x - r + std::min<decltype(v.x)>(v.x, static_cast<decltype(v.x)>(c0));
-    const auto min_y = p.y - r + std::min<decltype(v.y)>(v.y, static_cast<decltype(v.y)>(c0));
-    const auto max_x = p.x + r + std::max<decltype(v.x)>(v.x, static_cast<decltype(v.x)>(c0));
-    const auto max_y = p.y + r + std::max<decltype(v.y)>(v.y, static_cast<decltype(v.y)>(c0));
+    const auto min_x = p.x - r + std::min<decltype(v.x)>(v.x, static_cast<decltype(v.x)>(0));
+    const auto min_y = p.y - r + std::min<decltype(v.y)>(v.y, static_cast<decltype(v.y)>(0));
+    const auto max_x = p.x + r + std::max<decltype(v.x)>(v.x, static_cast<decltype(v.x)>(0));
+    const auto max_y = p.y + r + std::max<decltype(v.y)>(v.y, static_cast<decltype(v.y)>(0));
     return base::AABB{ min_x, min_y, max_x, max_y };
   }
 
-  [[nodiscard]] constexpr auto R45BB() const
+  [[nodiscard]] constexpr auto R45BB(auto sqrt2ub = double_sqrt2ub) const
   {
     const auto vx_ = v.x - v.y;
     const auto vy_ = v.x + v.y;
     const auto x_ = p.x - p.y;
     const auto y_ = p.x + p.y;
     const auto r_ = r * sqrt2ub;
-    const auto min_x = x_ - r_ + std::min<decltype(vx_)>(vx_, static_cast<decltype(v.x)>(c0));
-    const auto min_y = y_ - r_ + std::min<decltype(vy_)>(vy_, static_cast<decltype(v.y)>(c0));
-    const auto max_x = x_ + r_ + std::max<decltype(vx_)>(vx_, static_cast<decltype(v.x)>(c0));
-    const auto max_y = y_ + r_ + std::max<decltype(vy_)>(vy_, static_cast<decltype(v.y)>(c0));
+    const auto min_x = x_ - r_ + std::min<decltype(vx_)>(vx_, static_cast<decltype(v.x)>(0));
+    const auto min_y = y_ - r_ + std::min<decltype(vy_)>(vy_, static_cast<decltype(v.y)>(0));
+    const auto max_x = x_ + r_ + std::max<decltype(vx_)>(vx_, static_cast<decltype(v.x)>(0));
+    const auto max_y = y_ + r_ + std::max<decltype(vy_)>(vy_, static_cast<decltype(v.y)>(0));
     return base::R45BB{ min_x, min_y, max_x, max_y };
   }
 };
@@ -81,7 +81,7 @@ Overlap(DynamicCircle<Position0, Radius0, Velocity0> d0, DynamicCircle<Position1
   // *** ANALYSE DERIVATIVE FOR CLOSEST POINT ***
   // 2at + b = 0 <=> t = -b / 2a
 
-  if (b > c0) {
+  if (b > 0) {
     return false; // Closest Point at t<0
 }
 
@@ -90,14 +90,14 @@ Overlap(DynamicCircle<Position0, Radius0, Velocity0> d0, DynamicCircle<Position1
     return false; // Closest Point at t>1
 }
 
-  if (a == c0) {
-    if (b == c0) { // Constant Equation
+  if (a == 0) {
+    if (b == 0) { // Constant Equation
       return c <= xx;
 }
     // Linear Equation
     // 0 = bt + c <=> t_min = -c / b
     const auto t_min = -c / b;
-    return t_min < c1 && t_min > c0;
+    return t_min < 1 && t_min > 0;
   }
 
   // Closest Point at 0 < t < 1:
@@ -146,19 +146,19 @@ Overlap(Circle<Position0, Radius0> d0, DynamicCircle<Position1, Radius1, Velocit
   // *** ANALYSE DERIVATIVE FOR CLOSEST POINT ***
   // 2at + b = 0 <=> t = -b / 2a
 
-  if (b > c0)
+  if (b > 0)
     return false; // Closest Point at t<0
 
   const auto a2 = a + a;
   if (-b > a2)
     return false; // Closest Point at t>1
 
-  if (a == c0) {
-    if (b == c0) // Constant Equation
+  if (a == 0) {
+    if (b == 0) // Constant Equation
       return c <= xx;
     // Linear Equation
     // 0 = bt + c <=> t_min = -c / b
-    return -c < (c1 * b) && -c > (c0 * b);
+    return -c < (1 * b) && -c > (0 * b);
   }
 
   // Closest Point at 0 < t < 1:

@@ -32,7 +32,7 @@ mask(u64 val = 0xffffffffffffffff)
 /// mask_shift<8,4>(0b11111111) == 0b1111
 /// mask_shift<6,4>() == 0b11
 /// mask_shift<8,7>(0b11100000) == 0b1
-template<u8 u, u8 l>
+template<u8 u, u8 l = u - 1>
 constexpr auto
 mask_shift(u64 val)
 {

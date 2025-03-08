@@ -1,7 +1,8 @@
 #pragma once
 
-#include <cnl/cmath.h>
+#include <functional>
 #include <type_traits>
+#include <valarray>
 
 namespace base {
 
@@ -155,11 +156,11 @@ Dot(Vec2<X0, Y0> v0, Vec2<X1, Y1> v1) noexcept
   return v0.x * v1.x + v0.y * v1.y;
 }
 
-template<typename X, typename Y>
+template<typename X, typename Y, typename Sqrt>
 [[nodiscard]] constexpr auto
-Length(Vec2<X, Y> v) noexcept
+Length(Vec2<X, Y> v, Sqrt sqrt = std::sqrt) noexcept
 {
-  return cnl::sqrt(Dot(v, v));
+  return sqrt(Dot(v, v));
 }
 
 template<typename X, typename Y>

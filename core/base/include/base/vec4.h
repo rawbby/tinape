@@ -45,8 +45,8 @@ public:
     if constexpr (std::is_same_v<X, X_> && std::is_same_v<Y, Y_> && std::is_same_v<Z, Z_> && std::is_same_v<W, W_>) {
       if (this == &other) {
         return *this;
-}
-}
+      }
+    }
 
     x = other.x;
     y = other.y;
@@ -186,11 +186,11 @@ Dot(Vec4<X0, Y0, Z0, W0> v0, Vec4<X1, Y1, Z1, W1> v1) noexcept
   return v0.x * v1.x + v0.y * v1.y + v0.z * v1.z + v0.w * v1.w;
 }
 
-template<typename X, typename Y, typename Z, typename W>
+template<typename X, typename Y, typename Z, typename W, typename Sqrt>
 [[nodiscard]] constexpr auto
-Length(Vec4<X, Y, Z, W> v) noexcept
+Length(Vec4<X, Y, Z, W> v, Sqrt sqrt = std::sqrt) noexcept
 {
-  return cnl::sqrt(Dot(v, v));
+  return sqrt(Dot(v, v));
 }
 
 template<typename X, typename Y, typename Z, typename W>
