@@ -134,11 +134,17 @@ main()
   ASSERT_EQ((Fixed<POS, 1, 6>{ 64.0 }.repr_), 0b1);
   ASSERT_EQ((Fixed<POS, 1, 7>{ 128.0 }.repr_), 0b1);
 
-  const auto test = Fixed<VAR, 1, 0>{ -1.0 };
+  constexpr auto test = Fixed<VAR, 1, 0>{ -1.0 };
   ASSERT_EQ(test.repr_, -1);
   ASSERT_EQ(test.bits_, 1);
   ASSERT_EQ(test.power_, 0);
   ASSERT_EQ(test.sign_, VAR);
+
+  constexpr auto test2 = Fixed<VAR, 1, 0>{ -1.0f };
+  ASSERT_EQ(test2.repr_, -1);
+  ASSERT_EQ(test2.bits_, 1);
+  ASSERT_EQ(test2.power_, 0);
+  ASSERT_EQ(test2.sign_, VAR);
 
   ASSERT_EQ((Fixed<POS, 1, 3>{ 8.0 } * Fixed<POS, 1, 4>{ 16.0 }).repr_, 0b1);
   ASSERT_EQ((Fixed<POS, 1, 0>{ 1.0 } * Fixed<POS, 1, 7>{ 128.0 }).repr_, 0b1);

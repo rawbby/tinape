@@ -167,7 +167,8 @@ struct decompose<float>
         significant = sign ? -mantissa : mantissa;
         power = static_cast<i8>(-149);
       } else {
-        significant = set_bits<24>(sign ? -mantissa : mantissa);
+        const auto mantissa_ = set_bits<24>(mantissa);
+        significant = sign ? -mantissa_ : mantissa_;
         power = static_cast<i8>(static_cast<i32>(exponent) - 150);
       }
     }
@@ -198,7 +199,8 @@ struct decompose<double>
         significant = sign ? -mantissa : mantissa;
         power = static_cast<i16>(-1074);
       } else {
-        significant = set_bits<53>(sign ? -mantissa : mantissa);
+        const auto mantissa_ = set_bits<53>(mantissa);
+        significant = sign ? -mantissa_ : mantissa_;
         power = static_cast<i16>(static_cast<i32>(exponent) - 1075);
       }
     }

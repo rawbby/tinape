@@ -1,5 +1,3 @@
-include(CTest)
-
 if (BUILD_TESTING)
     enable_testing()
     foreach (TEST_DIR ${TEST_DIRS})
