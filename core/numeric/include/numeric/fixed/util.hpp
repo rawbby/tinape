@@ -5,8 +5,6 @@
 #include "../sign.hpp"
 #include "./literal.hpp"
 
-namespace numeric {
-
 template<Bits B, Sign S_, Bits B_, i64 P_>
 constexpr Fixed<S_, B, P_ + B_ - B>
 round_down(Fixed<S_, B_, P_> val)
@@ -51,5 +49,3 @@ template<Bits B, IsReprOrFloat auto V> constexpr auto round_up_v    = round_up  
 template<Bits B, IsReprOrFloat auto V> constexpr auto upper_bound_v = upper_bound <B>(as_fixed_v<V>);
 template<Bits B, IsReprOrFloat auto V> constexpr auto lower_bound_v = lower_bound <B>(as_fixed_v<V>);
 // clang-format on
-
-}

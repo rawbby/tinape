@@ -5,8 +5,6 @@
 
 #include <assert.hpp>
 
-namespace numeric {
-
 template<Sign S_, Bits B_>
 constexpr auto
 operator-(Int<S_, B_> lhs)
@@ -68,7 +66,7 @@ constexpr auto
 operator/(Int<S_, B_> lhs, Int<S, B> rhs)
 {
   static_assert(S != NIL, "division by zero");
-  //DEBUG_ASSERT_NE(rhs.repr_, 0, "division by zero");
+  // DEBUG_ASSERT_NE(rhs.repr_, 0, "division by zero");
 
   if constexpr (S_ == NIL)
     return Int<NIL, 0U>{};
@@ -82,6 +80,4 @@ operator/(Int<S_, B_> lhs, Int<S, B> rhs)
 
     return Int<S__, B__>{ repr };
   }
-}
-
 }

@@ -2,8 +2,6 @@
 
 #include "../fixed.hpp"
 
-namespace numeric {
-
 template<Sign S_, Bits B_, i64 P_>
 constexpr auto
 operator-(Fixed<S_, B_, P_> lhs)
@@ -68,6 +66,4 @@ operator*(Fixed<S_, B_, P_> lhs, Fixed<S, B, P> rhs)
 
     return Fixed<S__, B__, P__>::from_repr(res_);
   }
-}
-
 }

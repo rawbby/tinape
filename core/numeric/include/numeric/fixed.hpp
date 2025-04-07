@@ -3,11 +3,12 @@
 #include "./ieee754.hpp"
 #include "./repr.hpp"
 
-#include <algorithm>
-#include <bit>
-#include <limits>
+// clang-format off
+namespace internal{enum class IsFixedHelper_{};}
+// clang-format on
 
-namespace numeric {
+template<typename T>
+concept IsFixed = std::is_same_v<typename T::TypeId, internal::IsFixedHelper_>;
 
 /// Numerically stable fixed-point type with custom sign, bit-width and scaling.
 /// It supports conversion from IEEE 754 floating-point types and provides
@@ -20,6 +21,8 @@ namespace numeric {
 template<Sign S_, Bits B_, i64 P_>
 struct Fixed
 {
+  using TypeId = internal::IsFixedHelper_;
+
 private:
   static_assert(S_ != NIL || !P_, "nil sign implies zero power");
   static_assert(S_ != NIL || !B_, "nil sign implies zero bits");
@@ -55,6 +58,18 @@ public:
     result.repr_ = repr_cast<S_, B_>(repr);
     return result;
   }
-};
 
-}
+  static constexpr Fixed max()
+  {
+    Fixed tmp;
+    tmp.repr_ = (1 << bits_) - 1;
+    return tmp;
+  }
+
+  static constexpr Fixed min()
+  {
+    Fixed tmp;
+    tmp.repr_ = 1;
+    return tmp;
+  }
+};

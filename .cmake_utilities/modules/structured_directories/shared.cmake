@@ -10,7 +10,9 @@ foreach (TARGET_DIR ${SHARED_DIRS})
     string(REGEX REPLACE "^_+" "" TARGET_NAME_USC "${TARGET_NAME_USC}")
     string(TOUPPER "${TARGET_NAME_USC}" TARGET_NAME_USC)
 
-    add_library(${TARGET_NAME} SHARED)
+    add_library(${TARGET_NAME} SHARED
+            ../../../core/geometry/include/base/scalar.h
+            ../../../test/vec/test_vec.cpp)
 
     glob_source(TARGET_SRC "${TARGET_DIR}/src")
     glob_header(TARGET_INCLUDE "${TARGET_DIR}/include")

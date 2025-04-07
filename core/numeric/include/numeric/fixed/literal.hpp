@@ -4,13 +4,10 @@
 #include "../ieee754.hpp"
 
 #include <bit>
-#include <iostream>
-
-namespace numeric {
 
 namespace internal {
 
-template<double IEEE754>
+template<f64 IEEE754>
 constexpr auto
 literal_as_fixed_helper_double_()
 {
@@ -41,10 +38,10 @@ as_fixed_helper_()
   if constexpr (IsRepr<decltype(V)>)
     return as_fixed_helper_int_<V>();
 
-  if constexpr (std::is_same_v<float, decltype(V)>)
-    return literal_as_fixed_helper_double_<static_cast<double>(V)>();
+  if constexpr (std::is_same_v<f32, decltype(V)>)
+    return literal_as_fixed_helper_double_<static_cast<f64>(V)>();
 
-  if constexpr (std::is_same_v<double, decltype(V)>)
+  if constexpr (std::is_same_v<f64, decltype(V)>)
     return literal_as_fixed_helper_double_<V>();
 }
 
@@ -52,5 +49,3 @@ as_fixed_helper_()
 
 template<IsReprOrFloat auto I>
 constexpr auto as_fixed_v = internal::as_fixed_helper_<I>();
-
-}

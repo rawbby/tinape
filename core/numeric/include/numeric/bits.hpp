@@ -2,8 +2,6 @@
 
 #include "./base.hpp"
 
-namespace numeric {
-
 using Bits = u8;
 
 namespace internal {
@@ -75,6 +73,4 @@ count_right_zeros(IsRepr auto val)
   for (; (val & 1) == 0; val >>= 1)
     ++cnt;
   return cnt;
-}
-
 }

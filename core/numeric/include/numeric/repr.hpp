@@ -5,8 +5,7 @@
 #include "./sign.hpp"
 
 #include <type_traits>
-
-namespace numeric {
+#include <assert.hpp>
 
 namespace internal {
 template<Sign S, Bits B>
@@ -52,7 +51,6 @@ lshift(IsRepr auto repr, i64 shift)
     if (shift < 0)
       return static_cast<decltype(repr)>(repr >> static_cast<Bits>(-shift));
     return static_cast<decltype(repr)>(repr << static_cast<Bits>(shift));
-
   }
 }
 
@@ -71,14 +69,12 @@ repr_cast(IsRepr auto repr)
   constexpr auto B_ = (sizeof(repr) << 3) - std::is_signed_v<decltype(repr)>;
 
   if (S == NIL)
-    DEBUG_ASSERT_EQ(repr, 0);
+    DASSERT_EQ(repr, 0);
   else if (S != VAR)
-    DEBUG_ASSERT_GE(repr, 0);
+    DASSERT_GE(repr, 0);
 
   if (B < B_)
-    DEBUG_ASSERT_EQ((mask<B_, B>(repr < 0 ? -repr : repr)), 0);
+    DASSERT_EQ((mask<B_, B>(repr < 0 ? -repr : repr)), 0);
 
   return static_cast<Repr<S, B>>(repr);
-}
-
 }

@@ -2,8 +2,6 @@
 
 #include "./base.hpp"
 
-namespace numeric {
-
 /// These constants serve as compile-time hints for numeric type signedness.
 enum class Sign : u8
 {
@@ -47,5 +45,3 @@ constexpr Sign operator-(Sign s_,Sign s){return s_+(-s);}
 constexpr Sign operator/(Sign s_,Sign s){return s_*s;}
 
 // clang-format on
-
-}

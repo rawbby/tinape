@@ -2,7 +2,7 @@
 
 from os.path import dirname, join
 
-MAX_COUNT = 96
+MAX_COUNT = 16
 
 
 def generate_range(n):
@@ -104,7 +104,7 @@ def generate_reverse_macro(n):
 def generate_join(n):
     lines = []
     lines.append('#define JOIN_0()')
-    lines.append('#define JOIN_1(S,_0) _0')
+    lines.append('#define JOIN_1(S,_0)_0')
     for i in range(2, n + 1):
         params = ','.join(f"_{j}" for j in range(i))
         expansion_parts = [f"_{0}"]
@@ -140,9 +140,13 @@ def main():
 
     with open(join(dirname(__file__), 'include', 'macro.hpp'), 'w') as f:
         f.write('#pragma once\n')
+        f.write('#include <cstdio>\n')
+        f.write('#include <csignal>\n')
         f.write('// clang-format off\n')
         f.write('#define STRINGIFY(X)#X\n')
         f.write('#define TOSTRING(X)STRINGIFY(X)\n')
+        f.write('#define VOID ((void)0)\n')
+        f.write('#define ABORT() raise(SIGABRT)\n')
         for line in output:
             f.write(line)
             f.write('\n')

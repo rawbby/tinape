@@ -4,28 +4,28 @@
 
 #include <limits>
 
-namespace numeric::ieee754 {
+namespace ieee754 {
 
 namespace internal {
 
 constexpr auto
-sign_float_helper_(float ieee754)
+sign_float_helper_(f32 ieee754)
 {
-  static_assert(std::numeric_limits<float>::is_iec559);
+  static_assert(std::numeric_limits<f32>::is_iec559);
   return static_cast<u8>(std::bit_cast<u32>(ieee754) >> 31);
 }
 
 constexpr auto
-sign_double_helper_(double ieee754)
+sign_double_helper_(f64 ieee754)
 {
-  static_assert(std::numeric_limits<double>::is_iec559);
+  static_assert(std::numeric_limits<f64>::is_iec559);
   return static_cast<u8>(std::bit_cast<u64>(ieee754) >> 63);
 }
 
 constexpr i8
-power_float_helper_(float ieee754)
+power_float_helper_(f32 ieee754)
 {
-  static_assert(std::numeric_limits<float>::is_iec559);
+  static_assert(std::numeric_limits<f32>::is_iec559);
 
   if (ieee754 == 0.0f)
     return 0;
@@ -40,9 +40,9 @@ power_float_helper_(float ieee754)
 }
 
 constexpr i16
-power_double_helper_(double ieee754)
+power_double_helper_(f64 ieee754)
 {
-  static_assert(std::numeric_limits<double>::is_iec559);
+  static_assert(std::numeric_limits<f64>::is_iec559);
 
   if (ieee754 == 0.0)
     return 0;
@@ -57,9 +57,9 @@ power_double_helper_(double ieee754)
 }
 
 constexpr u32
-abs_significant_float_helper_(float ieee754)
+abs_significant_float_helper_(f32 ieee754)
 {
-  static_assert(std::numeric_limits<float>::is_iec559);
+  static_assert(std::numeric_limits<f32>::is_iec559);
 
   if (ieee754 == 0.0f)
     return 0;
@@ -75,9 +75,9 @@ abs_significant_float_helper_(float ieee754)
 }
 
 constexpr u64
-abs_significant_double_helper_(double ieee754)
+abs_significant_double_helper_(f64 ieee754)
 {
-  static_assert(std::numeric_limits<double>::is_iec559);
+  static_assert(std::numeric_limits<f64>::is_iec559);
 
   if (ieee754 == 0.0)
     return 0;
@@ -97,30 +97,30 @@ abs_significant_double_helper_(double ieee754)
 constexpr auto
 sign(IsFloat auto ieee754)
 {
-  if constexpr (std::is_same_v<float, decltype(ieee754)>)
+  if constexpr (std::is_same_v<f32, decltype(ieee754)>)
     return internal::sign_float_helper_(ieee754);
 
-  if constexpr (std::is_same_v<double, decltype(ieee754)>)
+  if constexpr (std::is_same_v<f64, decltype(ieee754)>)
     return internal::sign_double_helper_(ieee754);
 }
 
 constexpr auto
 power(IsFloat auto ieee754)
 {
-  if constexpr (std::is_same_v<float, decltype(ieee754)>)
+  if constexpr (std::is_same_v<f32, decltype(ieee754)>)
     return internal::power_float_helper_(ieee754);
 
-  if constexpr (std::is_same_v<double, decltype(ieee754)>)
+  if constexpr (std::is_same_v<f64, decltype(ieee754)>)
     return internal::power_double_helper_(ieee754);
 }
 
 constexpr auto
 abs_significant(IsFloat auto ieee754)
 {
-  if constexpr (std::is_same_v<float, decltype(ieee754)>)
+  if constexpr (std::is_same_v<f32, decltype(ieee754)>)
     return internal::abs_significant_float_helper_(ieee754);
 
-  if constexpr (std::is_same_v<double, decltype(ieee754)>)
+  if constexpr (std::is_same_v<f64, decltype(ieee754)>)
     return internal::abs_significant_double_helper_(ieee754);
 }
 
@@ -144,14 +144,14 @@ template<typename>
 struct decompose;
 
 template<>
-struct decompose<float>
+struct decompose<f32>
 {
   i32 significant;
   i8 power;
 
-  constexpr explicit decompose(float ieee754)
+  constexpr explicit decompose(f32 ieee754)
   {
-    static_assert(std::numeric_limits<float>::is_iec559);
+    static_assert(std::numeric_limits<f32>::is_iec559);
 
     if (ieee754 == 0.0f) {
       significant = 0;
@@ -176,14 +176,14 @@ struct decompose<float>
 };
 
 template<>
-struct decompose<double>
+struct decompose<f64>
 {
   i64 significant;
   i16 power;
 
-  constexpr explicit decompose(double ieee754)
+  constexpr explicit decompose(f64 ieee754)
   {
-    static_assert(std::numeric_limits<double>::is_iec559);
+    static_assert(std::numeric_limits<f64>::is_iec559);
 
     if (ieee754 == 0.0) {
       significant = 0;

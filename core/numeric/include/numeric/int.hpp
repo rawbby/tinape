@@ -2,7 +2,12 @@
 
 #include "./repr.hpp"
 
-namespace numeric {
+// clang-format off
+namespace internal{enum class IsIntHelper_{};}
+// clang-format on
+
+template<typename T>
+concept IsInt = std::is_same_v<typename T::TypeId, internal::IsIntHelper_>;
 
 /// Numerically stable integer type with custom sign and bit-width.
 /// It provides basic arithmetic operations with compile-time
@@ -13,6 +18,8 @@ namespace numeric {
 template<Sign S_, Bits B_>
 struct Int
 {
+  using TypeId = internal::IsIntHelper_;
+
 private:
   static_assert(S_ != NIL || !B_, "nil sign implies zero bits");
   static_assert(B_ || S_ == NIL, "zero bits implies nil sign");
@@ -38,6 +45,18 @@ public:
     : repr_()
   {
   }
-};
 
-}
+  static constexpr Int max()
+  {
+    Int tmp;
+    tmp.repr_ = (1 << bits_) - 1;
+    return tmp;
+  }
+
+  static constexpr Int min()
+  {
+    Int tmp;
+    tmp.repr_ = 1;
+    return tmp;
+  }
+};

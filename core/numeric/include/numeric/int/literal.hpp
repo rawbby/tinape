@@ -4,8 +4,6 @@
 
 #include <bit>
 
-namespace numeric {
-
 namespace internal {
 template<IsRepr auto I>
 constexpr auto
@@ -21,5 +19,3 @@ as_int_helper_()
 
 template<IsRepr auto I>
 constexpr auto as_int_v = internal::as_int_helper_<I>();
-
-}
