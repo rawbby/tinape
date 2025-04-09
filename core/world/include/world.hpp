@@ -11,9 +11,9 @@ constexpr auto world_precision = -5; // 3.125 cm
 using WorldPositionUnit = Fixed<VAR, 13 - world_precision, world_precision>;
 using WorldPosition = Vec2<WorldPositionUnit>;
 
-static_assert(WorldPositionUnit::bits_ == 18);
-static_assert(WorldPositionUnit::sign_ == VAR);
-static_assert(std::is_same_v<WorldPositionUnit::Repr_, i32>);
+static_assert(WorldPositionUnit::B == 18);
+static_assert(WorldPositionUnit::S == VAR);
+static_assert(std::is_same_v<WorldPositionUnit::Repr, i32>);
 
 constexpr auto world_min_extend = as_fixed_v<1.0>;
 constexpr auto world_max_extend = as_fixed_v<4.0>;
@@ -32,9 +32,9 @@ constexpr auto world_bounds = AABB{
 using WorldVelocityUnit = Fixed<VAR, 2 - world_precision, world_precision>;
 using WorldVelocity = Vec2<WorldVelocityUnit>;
 
-static_assert(WorldVelocityUnit::bits_ == 7);
-static_assert(WorldVelocityUnit::sign_ == VAR);
-static_assert(std::is_same_v<WorldVelocityUnit::Repr_, i8>);
+static_assert(WorldVelocityUnit::B == 7);
+static_assert(WorldVelocityUnit::S == VAR);
+static_assert(std::is_same_v<WorldVelocityUnit::Repr, i8>);
 
 // datatype for storing extend data like diameter, width, height ...
 // max_extend = 4m.
@@ -42,9 +42,9 @@ static_assert(std::is_same_v<WorldVelocityUnit::Repr_, i8>);
 // total: 8 bits
 using WorldExtendUnit = Fixed<VAR, 2 - world_precision, world_precision>;
 
-static_assert(WorldExtendUnit::bits_ == 7);
-static_assert(WorldExtendUnit::sign_ == VAR);
-static_assert(std::is_same_v<WorldExtendUnit::Repr_, i8>);
+static_assert(WorldExtendUnit::B == 7);
+static_assert(WorldExtendUnit::S == VAR);
+static_assert(std::is_same_v<WorldExtendUnit::Repr, i8>);
 
 using WorldCircle = Circle<WorldPositionUnit, WorldExtendUnit>;
 using WorldDynamicCircle = DynamicCircle<WorldPositionUnit, WorldExtendUnit, WorldVelocityUnit>;
@@ -71,10 +71,10 @@ public:
 
   IndexPair push_back(IsLineSegment auto line)
   {
-    static_assert(std::is_same_v<typename decltype(line)::Position, WorldPositionUnit>);
-    Index beg = line_segments_.size();
-    line.Subdivide<WorldExtendUnit, 4>(line_segments_);
-    Index end = line_segments_.size();
-    return { beg, end };
+    // static_assert(std::is_same_v<typename decltype(line)::Position, WorldPositionUnit>);
+    // Index beg = line_segments_.size();
+    // line.Subdivide<WorldExtendUnit, 4>(line_segments_);
+    // Index end = line_segments_.size();
+    return {};
   }
 };

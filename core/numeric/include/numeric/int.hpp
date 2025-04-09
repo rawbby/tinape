@@ -23,9 +23,9 @@ struct Int
 private:
   static_assert(S_ != NIL || !B_, "nil sign implies zero bits");
   static_assert(B_ || S_ == NIL, "zero bits implies nil sign");
-  using Repr_ = Repr<S_, B_>;
 
 public:
+  using Repr_ = Repr<S_, B_>;
   static constexpr auto sign_ = S_;
   static constexpr auto bits_ = B_;
   Repr_ repr_;

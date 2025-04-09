@@ -12,10 +12,3 @@
 #include "numeric/int/operator.hpp"
 
 #include "numeric/fixed.hpp"
-#include "numeric/fixed/comperator.hpp"
-#include "numeric/fixed/conversion.hpp"
-#include "numeric/fixed/literal.hpp"
-#include "numeric/fixed/math.hpp"
-#include "numeric/fixed/numbers.hpp"
-#include "numeric/fixed/operator.hpp"
-#include "numeric/fixed/util.hpp"

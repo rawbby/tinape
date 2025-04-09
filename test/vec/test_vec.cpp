@@ -1,6 +1,6 @@
 #include <numeric.hpp>
 #include <assert.hpp>
-#include <geometry.h>
+#include <geometry.hpp>
 
 #include <cmath>
 #include <type_traits>

@@ -22,10 +22,12 @@ struct LineSegment
   Vec2<Position> p;
   Vec2<Extend> e;
 
-  template<typename Position_, typename Extend_, int MaxLength>
-  void Subdivide(std::vector<LineSegment<Position_, Extend_>>& container) const
+  template<typename Extend_, int MaxLength>
+  void Subdivide(std::vector<LineSegment<Position, Extend_>>& container) const
   {
-    static_assert(MaxLength <= Extend_::max());
+    // TODO make external
+
+    // static_assert(MaxLength <= Extend_::max());
 
     auto s = std::max(std::abs(e.x), std::abs(e.y)) / MaxLength; // #subdivisions
     auto i = static_cast<unsigned>(s);

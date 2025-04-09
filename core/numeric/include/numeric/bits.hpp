@@ -69,8 +69,10 @@ set_bits()
 constexpr u8
 count_right_zeros(IsRepr auto val)
 {
+  val = ~val;
+
   u8 cnt = 0;
-  for (; (val & 1) == 0; val >>= 1)
+  for (; (val & 1) == 1; val >>= 1)
     ++cnt;
   return cnt;
 }

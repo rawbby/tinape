@@ -1,5 +1,5 @@
 #include "assert.hpp"
-#include "geometry.h"
+#include "geometry.hpp"
 #include "numeric.hpp"
 
 #include <cmath>
